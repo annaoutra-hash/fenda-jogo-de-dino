@@ -1101,6 +1101,7 @@ export default function App() {
                       calculateChance={calculateChance}
                       onChoose={handleResolveOption}
                       disabled={rollingDice}
+                      expeditionFood={exp.food}
                     />
                   )}
 

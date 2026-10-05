@@ -12,6 +12,7 @@ interface SwipeableCardProps {
   calculateChance: (option: any) => number;
   onChoose: (optionIndex: number) => void;
   disabled: boolean;
+  expeditionFood: number;
 }
 
 export function SwipeableCard({
@@ -20,6 +21,7 @@ export function SwipeableCard({
   calculateChance,
   onChoose,
   disabled,
+  expeditionFood,
 }: SwipeableCardProps) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -49,17 +51,24 @@ export function SwipeableCard({
   const rightOption = otherOptions[1] || card.options[1] || otherOptions[0];
   const upOption = specialOption || otherOptions[2] || null;
 
+  const isAffordable = (opt: any) => {
+    if (!opt) return false;
+    const foodCost = opt.successEffect?.food && opt.successEffect.food < 0 ? Math.abs(opt.successEffect.food) : 0;
+    return expeditionFood >= foodCost;
+  };
+
   const handleDragEnd = (_: any, info: any) => {
+    if (disabled) return;
     const thresholdX = 80;
     const thresholdY = -70;
 
-    if (info.offset.y < thresholdY && upOption) {
+    if (info.offset.y < thresholdY && upOption && isAffordable(upOption)) {
       sfx.cardSwipe();
       onChoose(upOption.originalIndex);
-    } else if (info.offset.x < -thresholdX && leftOption) {
+    } else if (info.offset.x < -thresholdX && leftOption && isAffordable(leftOption)) {
       sfx.cardSwipe();
       onChoose(leftOption.originalIndex);
-    } else if (info.offset.x > thresholdX && rightOption) {
+    } else if (info.offset.x > thresholdX && rightOption && isAffordable(rightOption)) {
       sfx.cardSwipe();
       onChoose(rightOption.originalIndex);
     }
@@ -157,14 +166,17 @@ export function SwipeableCard({
           const isItem = !!opt.reqTag;
           const isGuaranteed = opt.reqTag || opt.isGuaranteed;
           const chance = calculateChance(opt);
+          const afford = isAffordable(opt);
 
           return (
             <button
               key={opt.originalIndex}
-              disabled={disabled}
+              disabled={disabled || !afford}
               onClick={() => onChoose(opt.originalIndex)}
               className={`w-full text-left p-3 rounded-xl border text-xs transition flex justify-between items-center ${
-                isItem
+                !afford
+                  ? 'bg-[#121612] border-[#24301f] text-[#555] opacity-60 cursor-not-allowed'
+                  : isItem
                   ? 'bg-[#1e281b] border-[#4b6140] hover:bg-[#273423] text-[#e0d8c3] font-semibold'
                   : 'bg-[#1c2419] border-[#2b3924] hover:bg-[#253022] text-[#e0d8c3]'
               }`}
@@ -173,7 +185,7 @@ export function SwipeableCard({
                 {isItem && <Sparkles size={14} className="text-[#a4c794] shrink-0" />}
                 <span>{opt.text}</span>
               </span>
-              <span className="shrink-0 font-bold font-mono text-[#a4c794]">
+              <span className={`shrink-0 font-bold font-mono ${!afford ? 'text-[#555]' : 'text-[#a4c794]'}`}>
                 {isGuaranteed ? 'Certeiro' : `${chance}%`}
               </span>
             </button>
