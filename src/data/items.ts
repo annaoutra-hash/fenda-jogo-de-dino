@@ -1,0 +1,198 @@
+import type { ItemDef, SurvivorOrigin } from '../types';
+
+export const SURVIVOR_ORIGINS: Record<string, SurvivorOrigin> = {
+  medica: {
+    id: 'medica',
+    name: 'Médica Cirurgiã',
+    description: '+15% em sobrevivência. Começa com kit médico.',
+    trait: 'Conhecimento Anatômico: imune a sangramentos leves.',
+    mods: { sobrev: 15 },
+    startItems: ['kit']
+  },
+  mecanico: {
+    id: 'mecanico',
+    name: 'Engenheiro Mecânico',
+    description: '+20% em arrombar. 35% de chance de não consumir carga de ferramentas.',
+    trait: 'Mãos Firmes: aproveita sucatas complexas.',
+    mods: { arrombar: 20 },
+  },
+  mateiro: {
+    id: 'mateiro',
+    name: 'Guia Florestal',
+    description: '+20% em furtividade e +10% em agilidade.',
+    trait: 'Passos Silenciosos: avista emboscadas com antecedência.',
+    mods: { furtivo: 20, agil: 10 },
+  },
+  cacador: {
+    id: 'cacador',
+    name: 'Ex-Militar / Caçador',
+    description: '+15% em combate. Começa com lança tática.',
+    trait: 'Instinto Predatório: bônus em encontros com carnívoros.',
+    mods: { combate: 15 },
+    startItems: ['lanca']
+  },
+  eletricista: {
+    id: 'eletricista',
+    name: 'Técnica de Telecom',
+    description: '+15% em agilidade e +10% em sobrevivência.',
+    trait: 'Frequência de Rádio: capta eventos especiais mais cedo.',
+    mods: { agil: 15, sobrev: 10 },
+  }
+};
+
+export const SURVIVOR_NAMES = [
+  'Rita Fonseca', 'Jonas Becker', 'Dalva Rios', 'Caio Valente',
+  'Iara Mendes', 'Bento Prado', 'Nádia Cruz', 'Tião Silveira',
+  'Lúcia Albuquerque', 'Ravi Santos', 'Olga Vane', 'Moacir Lima',
+  'Kátia Guimarães', 'Davi Rocha', 'Zélia Vargas', 'Heitor Paz'
+];
+
+export const ITEM_CATALOG: Record<string, ItemDef> = {
+  lanca: {
+    id: 'lanca',
+    name: 'Lança de Faca Amarrada',
+    desc: 'Lâmina de cozinha presa a um bambu endurecido no fogo.',
+    tags: ['corte'],
+    bonus: { combate: 15 },
+    uses: null,
+    cost: { sucata: 2 },
+    level: 1,
+  },
+  pe: {
+    id: 'pe',
+    name: 'Pé-de-Cabra Reforçado',
+    desc: 'Alavanca de aço forjado. Abre contêineres e portas emperradas.',
+    tags: ['arrombar'],
+    bonus: { combate: 5 },
+    uses: 3,
+    cost: { sucata: 3 },
+    level: 1,
+  },
+  corda: {
+    id: 'corda',
+    name: 'Corda de Escalada',
+    desc: 'Fibra sintética de paraquedas resgatado.',
+    tags: ['escalar'],
+    bonus: { agil: 15 },
+    uses: null,
+    cost: { sucata: 2 },
+    level: 1,
+  },
+  apito: {
+    id: 'apito',
+    name: 'Apito Ultrassônico',
+    desc: 'Gera uma frequência aguda inaudível para humanos, mas atordoante para répteis.',
+    tags: ['distrair'],
+    uses: 2,
+    cost: { sucata: 3 },
+    level: 1,
+  },
+  kit: {
+    id: 'kit',
+    name: 'Estojo Médico de Primeiros Socorros',
+    desc: 'Gaze, sutura e antissépticos concentrados. Restaura 40 pontos de vida.',
+    uses: 1,
+    cost: { sucata: 1, remedio: 1 },
+    level: 1,
+    heal: 40,
+  },
+  sinal: {
+    id: 'sinal',
+    name: 'Sinalizador Químico Náutico',
+    desc: 'Queima a 1.200°C com fumaça escarlate. Apavora predadores noturnos.',
+    tags: ['fogo'],
+    uses: 1,
+    cost: { sucata: 4 },
+    level: 2,
+  },
+  esp: {
+    id: 'esp',
+    name: 'Espingarda de Caça Calibre 12',
+    desc: 'Cano duplo, duas munições intactas. Poder de parada absoluto.',
+    tags: ['tiro'],
+    bonus: { combate: 25 },
+    uses: 2,
+    cost: { sucata: 7 },
+    level: 2,
+  },
+  colar: {
+    id: 'colar',
+    name: 'Colar com Dente de T-Rex',
+    desc: 'O cheiro e a imponência do predador supremo afastam ameaças menores.',
+    tags: ['medo'],
+    uses: null,
+    cost: null,
+    level: 9,
+  },
+  ovo_raptor: {
+    id: 'ovo_raptor',
+    name: 'Ovo de Velociraptor',
+    desc: 'Um ovo mosqueado de verde e marrom. Leve para o acampamento para chocar.',
+    tags: ['ovo'],
+    uses: null,
+    cost: null,
+    level: 2,
+  },
+  pet_raptor: {
+    id: 'pet_raptor',
+    name: 'Velociraptor Filhote',
+    desc: 'Um companheiro leal e ágil. +20% em Agilidade e Combate.',
+    tags: ['montaria', 'corte'],
+    bonus: { agil: 20, combate: 20 },
+    uses: null,
+    cost: null,
+    level: 3,
+  },
+  ovo_trico: {
+    id: 'ovo_trico',
+    name: 'Ovo de Triceratops',
+    desc: 'Ovo grande e pesado. Leve para a incubadora no acampamento.',
+    tags: ['ovo'],
+    uses: null,
+    cost: null,
+    level: 2,
+  },
+  mount_trico: {
+    id: 'mount_trico',
+    name: 'Triceratops de Carga',
+    desc: 'Uma montaria robusta. +20% em Sobrevivência e Arrombamento (Força Bruta).',
+    tags: ['montaria', 'arrombar'],
+    bonus: { sobrev: 20, arrombar: 20 },
+    uses: null,
+    cost: null,
+    level: 3,
+  }
+};
+
+export const BUILDINGS_CONFIG = {
+  bancada: {
+    name: 'Bancada de Improviso',
+    maxLevel: 2,
+    costs: [0, 8],
+    desc: 'Lv2 permite forjar o Sinalizador Químico e a Espingarda Calibre 12.',
+  },
+  defumador: {
+    name: 'Defumador de Carne',
+    maxLevel: 1,
+    costs: [6],
+    desc: 'Aumenta a capacidade máxima de rações em expedição de 5 para 8.',
+  },
+  enfermaria: {
+    name: 'Enfermaria de Lona',
+    maxLevel: 1,
+    costs: [6],
+    desc: 'Aumenta a vida máxima dos batedores de 100 para 130 pontos.',
+  },
+  radio: {
+    name: 'Torre de Rádio Amador',
+    maxLevel: 1,
+    costs: [10],
+    desc: 'Transmite na frequência de emergência: capta outros sobreviventes e localiza a Fenda.',
+  },
+  incubadora: {
+    name: 'Incubadora Geotérmica',
+    maxLevel: 1,
+    costs: [8],
+    desc: 'Usa calor vulcânico para chocar ovos encontrados em expedições. Permite domar montarias.',
+  },
+};
