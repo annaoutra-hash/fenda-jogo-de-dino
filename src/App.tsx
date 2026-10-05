@@ -10,7 +10,8 @@ import {
   ArrowRight,
   RotateCcw,
   Backpack,
-  Activity
+  Activity,
+  HelpCircle
 } from 'lucide-react';
 import type {
   GameState,
@@ -36,11 +37,13 @@ import { CampScene } from './components/CampScene';
 import { RouteSelector } from './components/RouteSelector';
 import type { RouteOption } from './components/RouteSelector';
 import { ItemIcon } from './components/ItemIcon';
+import { HelpModal } from './components/HelpModal';
 import { sfx } from './utils/audio';
 
 const STORAGE_KEY = 'fenda_v2_save';
 
 export default function App() {
+  const [showHelp, setShowHelp] = useState(false);
   const [gameState, setGameState] = useState<GameState>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -1221,11 +1224,21 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#121612] text-[#e0d8c3] flex justify-center p-3 pb-12">
+      <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} />
       <div className="w-full max-w-md">
         {/* Cabeçalho do Líder */}
         <div>
           <h1 className="text-xl font-bold text-[#e0d8c3] flex items-center justify-between">
-            Acampamento dos Destroços
+            <span className="flex items-center gap-2">
+              Acampamento
+              <button 
+                onClick={() => setShowHelp(true)}
+                className="text-[#857f70] hover:text-[#e0d8c3] transition bg-[#182017] p-1 rounded border border-[#2c3826]"
+                title="Manual de Sobrevivência"
+              >
+                <HelpCircle size={16} />
+              </button>
+            </span>
             <span className="text-xs font-mono font-normal text-[#857f70]">Geração {gameState.generation}</span>
           </h1>
           <p className="text-xs text-[#857f70] mt-0.5">
