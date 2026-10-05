@@ -124,6 +124,8 @@ export interface GameState {
     enfermaria: number;
     radio: number;
     incubadora: number;
+    horta: number;
+    torre: number;
   };
   stash: ItemInstance[];
   leader: Survivor | null;

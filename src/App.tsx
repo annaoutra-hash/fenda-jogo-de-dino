@@ -49,6 +49,8 @@ export default function App() {
         // Migrations / Polyfills for older saves
         if (!parsed.loreLogs) parsed.loreLogs = [];
         if (!parsed.buildings.incubadora) parsed.buildings.incubadora = 0;
+        if (!parsed.buildings.horta) parsed.buildings.horta = 0;
+        if (!parsed.buildings.torre) parsed.buildings.torre = 0;
         if (parsed.report === undefined) parsed.report = null;
         if (parsed.expeditionSetup === undefined) parsed.expeditionSetup = null;
         return parsed;
@@ -70,7 +72,7 @@ export default function App() {
     const p3 = generateRandomSurvivor();
     return {
       camp: { sucata: 6, comida: 8, remedio: 1 },
-      buildings: { bancada: 1, defumador: 0, enfermaria: 0, radio: 0, incubadora: 0 },
+      buildings: { bancada: 1, defumador: 0, enfermaria: 0, radio: 0, incubadora: 0, horta: 0, torre: 0 },
       stash: [
         { id: 'lanca', usesRemaining: null },
         { id: 'corda', usesRemaining: null }
@@ -296,6 +298,11 @@ export default function App() {
         chance += def.bonus[cardOption.attr as keyof typeof def.bonus] || 0;
       }
     });
+
+    // Torre de Vigia
+    if (gameState.buildings.torre > 0 && (cardOption.attr === 'furtivo' || cardOption.attr === 'agil')) {
+      chance += 10;
+    }
 
     return Math.max(5, Math.min(95, chance));
   };
@@ -726,12 +733,19 @@ export default function App() {
       lostLog.push('Perdeu metade dos recursos coletados na fuga desorganizada.');
     }
 
+    // Horta Hidropônica
+    const hortaBonus = gameState.buildings.horta > 0 ? 3 : 0;
+    if (hortaBonus > 0) {
+      exp.loot.comida += hortaBonus;
+      lostLog.push(`Horta gerou +${hortaBonus} comida enquanto você explorava.`);
+    }
+
     const report: ExpeditionReport = {
       status: (isRetreat ? 'retreat' : 'victory') as 'victory' | 'retreat',
       leaderName: gameState.leader?.name || 'Desconhecido',
       cardsExplored: exp.cardIndex,
       loot: exp.loot,
-      log: isRetreat ? lostLog : ['Retornou em segurança e trouxe os suprimentos.']
+      log: isRetreat ? lostLog : (hortaBonus > 0 ? [`Retornou em segurança e trouxe os suprimentos. A Horta gerou +${hortaBonus} comida passivamente.`] : ['Retornou em segurança e trouxe os suprimentos.'])
     };
 
     setGameState(prev => ({
@@ -760,16 +774,25 @@ export default function App() {
       recovered: false
     };
 
+    // Horta Hidropônica gera mesmo se ele morrer
+    const hortaBonus = gameState.buildings.horta > 0 ? 3 : 0;
+    
     const report: ExpeditionReport = {
       status: 'death' as const,
       leaderName: gameState.leader.name,
       cardsExplored: exp.cardIndex,
-      loot: { sucata: 0, comida: 0, remedio: 0, items: [] }, // Perdeu tudo
-      log: ['O batedor não retornou. Todos os itens e recursos coletados foram perdidos na selva.']
+      loot: { sucata: 0, comida: hortaBonus, remedio: 0, items: [] }, // Perdeu tudo, mas horta ficou na base
+      log: hortaBonus > 0 
+        ? ['O batedor não retornou. Todos os itens coletados foram perdidos na selva.', `A Horta gerou +${hortaBonus} comida passivamente no acampamento.`]
+        : ['O batedor não retornou. Todos os itens e recursos coletados foram perdidos na selva.']
     };
 
     setGameState(prev => ({
       ...prev,
+      camp: {
+        ...prev.camp,
+        comida: prev.camp.comida + hortaBonus
+      },
       deadLeaders: [...prev.deadLeaders, deadRecord],
       leader: null,
       activeExpedition: null,

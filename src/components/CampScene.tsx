@@ -116,6 +116,34 @@ export function CampScene({ buildings, survivors }: CampSceneProps) {
         </g>
       )}
 
+      {/* Torre de Vigia */}
+      {buildings.torre > 0 && (
+        <g>
+          {/* Estrutura de madeira */}
+          <line x1="20" y1="165" x2="30" y2="70" stroke="#0a0e0a" strokeWidth="3.5" />
+          <line x1="50" y1="165" x2="40" y2="70" stroke="#0a0e0a" strokeWidth="3.5" />
+          <line x1="23" y1="130" x2="47" y2="130" stroke="#1c2719" strokeWidth="2" />
+          <line x1="26" y1="100" x2="44" y2="100" stroke="#1c2719" strokeWidth="2" />
+          {/* Cabine da torre */}
+          <rect x="25" y="60" width="20" height="15" fill="#0a0e0a" stroke="#4a8270" strokeWidth="1" />
+          <polygon points="20,60 35,45 50,60" fill="#1c2719" />
+          {/* Batedor na torre */}
+          <circle cx="35" cy="55" r="2.5" fill="#e0d8c3" />
+        </g>
+      )}
+
+      {/* Horta Hidropônica */}
+      {buildings.horta > 0 && (
+        <g>
+          <rect x="135" y="160" width="25" height="6" rx="2" fill="#2c3826" stroke="#4a8270" strokeWidth="1" />
+          <rect x="135" y="152" width="25" height="6" rx="2" fill="#2c3826" stroke="#4a8270" strokeWidth="1" />
+          <path d="M 138,160 Q 140,154 142,160 M 145,160 Q 147,152 149,160 M 153,160 Q 155,155 157,160" fill="none" stroke="#8fd16a" strokeWidth="1.5" />
+          <path d="M 138,152 Q 140,146 142,152 M 145,152 Q 147,144 149,152 M 153,152 Q 155,147 157,152" fill="none" stroke="#8fd16a" strokeWidth="1.5" />
+          {/* Gotas/tubulação azulada para indicar hidroponia */}
+          <line x1="130" y1="145" x2="130" y2="165" stroke="#4a8270" strokeWidth="2" />
+        </g>
+      )}
+
       {/* Fogueira central */}
       <ellipse cx="200" cy="185" rx="60" ry="18" fill="#e57a3b" className="glow" />
       <line x1="186" y1="190" x2="214" y2="182" stroke="#2a1d12" strokeWidth="4" strokeLinecap="round" />

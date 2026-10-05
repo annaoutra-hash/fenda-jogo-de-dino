@@ -195,4 +195,16 @@ export const BUILDINGS_CONFIG = {
     costs: [8],
     desc: 'Usa calor vulcânico para chocar ovos encontrados em expedições. Permite domar montarias.',
   },
+  horta: {
+    name: 'Horta Hidropônica',
+    maxLevel: 1,
+    costs: [12],
+    desc: 'Passivamente gera +3 Comida no acampamento sempre que uma expedição retorna (vitória ou derrota).',
+  },
+  torre: {
+    name: 'Torre de Vigia',
+    maxLevel: 1,
+    costs: [15],
+    desc: 'Permite antecipar perigos e caminhos ocultos. (+10% chance de Furtividade e Agilidade em expedições).',
+  },
 };
