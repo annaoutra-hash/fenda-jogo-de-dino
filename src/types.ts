@@ -44,6 +44,7 @@ export interface CardOption {
   failEffect?: Effect;
   successMsg: string;
   failMsg?: string;
+  triggerCombat?: EnemyDef;
 }
 
 export interface Effect {
