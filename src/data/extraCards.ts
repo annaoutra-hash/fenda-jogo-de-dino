@@ -193,13 +193,17 @@ export const EXTRA_CARDS: CardDef[] = [
         failMsg: 'A conversa azeda. Você apanha e ainda perde comida.',
       },
       {
-        text: 'Lutar e furar o bloqueio',
-        attr: 'combate',
-        baseChance: 40,
-        successEffect: { sucata: 2 },
-        successMsg: 'Você avança distribuindo pancadas. Eles se assustam e abrem caminho!',
-        failEffect: { hp: -25 },
-        failMsg: 'A desvantagem numérica fala mais alto. Você apanha feio e foge machucado.',
+        text: 'Lutar (combate direto)',
+        isGuaranteed: true,
+        successMsg: '',
+        triggerCombat: {
+          name: 'Saqueadores',
+          maxHp: 35,
+          damage: 10,
+          combatChance: 45,
+          fleeChance: 60,
+          loot: { sucata: 2, food: 1 }
+        }
       },
     ],
   },

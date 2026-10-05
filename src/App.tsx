@@ -383,8 +383,24 @@ export default function App() {
       gameState.flags[`card_${card.id}`] = true;
     }
 
-    const logs: string[] = [];
     sfx.click();
+
+    if (option.triggerCombat) {
+      setGameState(prev => prev.activeExpedition ? ({
+        ...prev,
+        activeExpedition: {
+          ...prev.activeExpedition,
+          activeEnemy: {
+            hp: option.triggerCombat!.maxHp,
+            maxHp: option.triggerCombat!.maxHp,
+            def: option.triggerCombat!
+          }
+        }
+      }) : prev);
+      return;
+    }
+
+    const logs: string[] = [];
 
     // 1. Garantido (Item ou Ação)
     if (option.reqTag || option.isGuaranteed) {
