@@ -18,7 +18,8 @@ import type {
   CardDef,
   RollResult,
   Biome,
-  Effect
+  Effect,
+  ExpeditionReport
 } from './types';
 import {
   SURVIVOR_ORIGINS,
@@ -497,6 +498,7 @@ export default function App() {
     if (!gameState.activeExpedition || !gameState.activeExpedition.activeEnemy || rollingDice) return;
     const exp = gameState.activeExpedition;
     const enemy = exp.activeEnemy;
+    if (!enemy) return;
     
     setRollingDice(true);
     sfx.roll();
@@ -708,8 +710,8 @@ export default function App() {
       lostLog.push('Perdeu metade dos recursos coletados na fuga desorganizada.');
     }
 
-    const report = {
-      status: isRetreat ? 'retreat' : 'victory',
+    const report: ExpeditionReport = {
+      status: (isRetreat ? 'retreat' : 'victory') as 'victory' | 'retreat',
       leaderName: gameState.leader?.name || 'Desconhecido',
       cardsExplored: exp.cardIndex,
       loot: exp.loot,
@@ -742,8 +744,8 @@ export default function App() {
       recovered: false
     };
 
-    const report = {
-      status: 'death',
+    const report: ExpeditionReport = {
+      status: 'death' as const,
       leaderName: gameState.leader.name,
       cardsExplored: exp.cardIndex,
       loot: { sucata: 0, comida: 0, remedio: 0, items: [] }, // Perdeu tudo
