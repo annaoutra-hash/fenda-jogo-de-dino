@@ -28,11 +28,16 @@ export const ALL_CARDS: CardDef[] = [
       },
       {
         text: 'Espantar no grito e cajado',
-        attr: 'combate',
-        baseChance: 45,
-        successMsg: 'Você afasta os bichos com golpes secos no chão.',
-        failEffect: { hp: -15 },
-        failMsg: 'Eles saltam em enxame. Dezenas de mordidas afiadas rasgam seus tornozelos antes de recuarem.',
+        isGuaranteed: true,
+        successMsg: '',
+        triggerCombat: {
+          name: 'Bando de Compys',
+          maxHp: 20,
+          damage: 5,
+          combatChance: 70,
+          fleeChance: 80,
+          loot: { sucata: 1 }
+        }
       },
     ],
   },
@@ -57,12 +62,16 @@ export const ALL_CARDS: CardDef[] = [
       },
       {
         text: 'Combater com arma branca',
-        attr: 'combate',
-        baseChance: 25,
-        successEffect: { sucata: 2 },
-        successMsg: 'Você intercepta o bote do primeiro com precisão cirúrgica. Os outros dois hesitam e batem em retirada.',
-        failEffect: { hp: -35 },
-        failMsg: 'O raptor do flanco atinge seu torso. Garras afiadas deixam ferimentos profundos.',
+        isGuaranteed: true,
+        successMsg: '',
+        triggerCombat: {
+          name: 'Raptores',
+          maxHp: 40,
+          damage: 15,
+          combatChance: 40,
+          fleeChance: 50,
+          loot: { sucata: 2, comida: 1 }
+        }
       },
       {
         text: 'Esgueirar-se por entre as pedras',
@@ -372,12 +381,16 @@ export const ALL_CARDS: CardDef[] = [
       },
       {
         text: 'Combater com pura coragem e aço',
-        attr: 'combate',
-        baseChance: 5,
-        successEffect: { sucata: 6, item: 'colar' },
-        successMsg: 'UM FEITO HISTÓRICO! Você esquiva do bote, decepa um dente gigantesco e a fera ferida foge uivando!',
-        failEffect: { hp: -60 },
-        failMsg: 'Um golpe devastador de mandíbula e cauda quase parte sua coluna ao meio. Você escapa por milagre.',
+        isGuaranteed: true,
+        successMsg: '',
+        triggerCombat: {
+          name: 'Tiranossauro Rex',
+          maxHp: 150,
+          damage: 40,
+          combatChance: 20,
+          fleeChance: 30,
+          loot: { sucata: 6, item: 'colar' }
+        }
       },
       {
         text: 'Mergulhar e camuflar o cheiro na lama',

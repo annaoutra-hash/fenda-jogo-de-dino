@@ -435,11 +435,16 @@ export const EXTRA_CARDS: CardDef[] = [
       },
       {
         text: 'Atacar o líder do bando',
-        attr: 'combate',
-        baseChance: 40,
-        successMsg: 'Derrubado o líder, os outros se dispersam.',
-        failEffect: { hp: -25, food: -1 },
-        failMsg: 'Eles atacam em grupo e levam parte da comida.',
+        isGuaranteed: true,
+        successMsg: '',
+        triggerCombat: {
+          name: 'Troodonte Alfa',
+          maxHp: 25,
+          damage: 8,
+          combatChance: 60,
+          fleeChance: 70,
+          loot: { sucata: 1 }
+        }
       },
     ],
   },
