@@ -1018,7 +1018,7 @@ export default function App() {
               Tudo sendo puxado para 66 milhões de anos no passado.
             </p>
             <p className="text-sm text-[#e0d8c3]">
-              O céu tem dois sois. Um deles é maior a cada dia. Você não tem muito tempo antes da extinção.
+              O céu tem dois sois. Um deles é maior a cada dia. Você sente que não tem muito tempo.
             </p>
           </div>
 
@@ -1452,9 +1452,11 @@ export default function App() {
           <p className="text-xs text-[#857f70] mt-0.5">
             Líder: <b className="text-[#e0d8c3]">{gameState.leader.name}</b> ({leaderOrigin.name})
           </p>
-          <div className="mt-2 inline-block px-3 py-1 bg-[#1a0f0f] border border-[#ff4d4d]/30 text-[#ff4d4d] text-[10px] font-mono rounded tracking-widest uppercase shadow-[0_0_8px_rgba(255,77,77,0.15)]">
-            Alerta: Impacto estimado em {35 - (gameState.expeditionCount || 0)} expediç{35 - (gameState.expeditionCount || 0) === 1 ? 'ão' : 'ões'}
-          </div>
+          {(gameState.expeditionCount || 0) >= 20 && (
+            <div className="mt-2 inline-block px-3 py-1 bg-[#1a0f0f] border border-[#ff4d4d]/30 text-[#ff4d4d] text-[10px] font-mono rounded tracking-widest uppercase shadow-[0_0_8px_rgba(255,77,77,0.15)] animate-pulse">
+              Alerta: O Sol intruso cresce. Impacto estimado em {35 - (gameState.expeditionCount || 0)} expediç{35 - (gameState.expeditionCount || 0) === 1 ? 'ão' : 'ões'}
+            </div>
+          )}
           <p className="text-[11px] text-[#4a8270] font-mono mt-0.5">{leaderOrigin.trait}</p>
         </div>
 
