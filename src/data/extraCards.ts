@@ -296,7 +296,7 @@ export const EXTRA_CARDS: CardDef[] = [
         triggerMinigame: 'fishing',
         successEffect: { comida: 5 },
         successMsg: 'Três peixes gordos no espeto.',
-        failEffect: { comida: -1 },
+        failEffect: { food:  },
         failMsg: 'Horas perdidas sem pegar nada. Fome e frustração.',
       },
       {

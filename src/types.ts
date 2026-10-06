@@ -145,6 +145,7 @@ export interface GameState {
   } | null;
   report: ExpeditionReport | null;
   gameWon: boolean;
+  incubatorQueue: { eggId: string; petId: string; expeditionsLeft: number }[];
 }
 
 export interface ExpeditionState {

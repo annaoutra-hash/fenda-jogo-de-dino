@@ -4,11 +4,12 @@ interface CampSceneProps {
   buildings: GameState['buildings'];
   survivors: number;
   stash: ItemInstance[];
+  incubatorQueue?: GameState['incubatorQueue'];
 }
 
 // Cena viva do acampamento: estática no geral, com fogo tremulando,
 // fumaça subindo e estruturas que aparecem conforme são construídas.
-export function CampScene({ buildings, survivors, stash }: CampSceneProps) {
+export function CampScene({ buildings, survivors, stash, incubatorQueue }: CampSceneProps) {
   const people = Math.min(survivors, 4);
   const seats = [
     { x: 150, y: 172 },
@@ -99,8 +100,8 @@ export function CampScene({ buildings, survivors, stash }: CampSceneProps) {
       {buildings.incubadora > 0 && (
         <g>
           <ellipse cx="280" cy="180" rx="20" ry="8" fill="#1c1212" stroke="#e57a3b" strokeWidth="1" />
-          {stash.some(s => s.id === 'ovo_raptor') && <ellipse cx="275" cy="178" rx="4" ry="5" fill="#4a8270" />}
-          {stash.some(s => s.id === 'ovo_trico') && <ellipse cx="286" cy="179" rx="5" ry="6" fill="#8fd16a" />}
+          {(incubatorQueue?.some(q => q.eggId === 'ovo_raptor') || stash.some(s => s.id === 'ovo_raptor')) && <ellipse cx="275" cy="178" rx="4" ry="5" fill="#4a8270" />}
+          {(incubatorQueue?.some(q => q.eggId === 'ovo_trico') || stash.some(s => s.id === 'ovo_trico')) && <ellipse cx="286" cy="179" rx="5" ry="6" fill="#8fd16a" />}
           <path d="M 270,180 Q 280,170 290,180" fill="none" stroke="#e57a3b" strokeWidth="1.5" className="wave" opacity="0.4" />
         </g>
       )}

@@ -58,6 +58,7 @@ export default function App() {
         if (!parsed.buildings.torre) parsed.buildings.torre = 0;
         if (parsed.report === undefined) parsed.report = null;
         if (parsed.expeditionSetup === undefined) parsed.expeditionSetup = null;
+        if (!parsed.incubatorQueue) parsed.incubatorQueue = [];
         return parsed;
       }
     } catch {}
@@ -91,7 +92,8 @@ export default function App() {
       activeExpedition: null,
       expeditionSetup: null,
       report: null,
-      gameWon: false
+      gameWon: false,
+      incubatorQueue: []
     };
   }
 
@@ -188,13 +190,14 @@ export default function App() {
     });
   };
 
-  const handleHatch = (stashIndex: number, petId: string) => {
+  const handleHatch = (stashIndex: number, eggId: string, petId: string) => {
     sfx.click();
     setGameState(prev => {
       const nextStash = [...prev.stash];
       nextStash.splice(stashIndex, 1);
-      nextStash.push({ id: petId, usesRemaining: null });
-      return { ...prev, stash: nextStash };
+      const queue = [...(prev.incubatorQueue || [])];
+      queue.push({ eggId, petId, expeditionsLeft: 2 });
+      return { ...prev, stash: nextStash, incubatorQueue: queue };
     });
   };
 
@@ -783,22 +786,40 @@ export default function App() {
       lostLog.push(`Horta gerou +${hortaBonus} comida enquanto você explorava.`);
     }
 
+
+    // Process incubator queue
+    const newQueue: typeof gameState.incubatorQueue = [];
+    const newStash = [...gameState.stash, ...exp.pack, ...exp.loot.items];
+    const incubatorLogs: string[] = [];
+    
+    (gameState.incubatorQueue || []).forEach(q => {
+      if (q.expeditionsLeft <= 1) {
+        newStash.push({ id: q.petId, usesRemaining: null });
+        incubatorLogs.push(`Um ovo eclodiu! O novo mascote está no acampamento.`);
+      } else {
+        newQueue.push({ ...q, expeditionsLeft: q.expeditionsLeft - 1 });
+      }
+    });
+    
+    const finalLog = isRetreat ? lostLog : (hortaBonus > 0 ? [`Retornou em segurança. A Horta gerou +${hortaBonus} comida.`] : ['Retornou em segurança.']);
+    
     const report: ExpeditionReport = {
       status: (isRetreat ? 'retreat' : 'victory') as 'victory' | 'retreat',
       leaderName: gameState.leader?.name || 'Desconhecido',
       cardsExplored: exp.cardIndex,
       loot: exp.loot,
-      log: isRetreat ? lostLog : (hortaBonus > 0 ? [`Retornou em segurança e trouxe os suprimentos. A Horta gerou +${hortaBonus} comida passivamente.`] : ['Retornou em segurança e trouxe os suprimentos.'])
+      log: [...finalLog, ...incubatorLogs]
     };
 
     setGameState(prev => ({
       ...prev,
       camp: {
         sucata: prev.camp.sucata + exp.loot.sucata,
-        comida: prev.camp.comida + exp.loot.comida + exp.food, // devolve comida nãousada
+        comida: prev.camp.comida + exp.loot.comida + exp.food,
         remedio: prev.camp.remedio + exp.loot.remedio
       },
-      stash: [...prev.stash, ...exp.pack, ...exp.loot.items],
+      stash: newStash,
+      incubatorQueue: newQueue,
       activeExpedition: null,
       report
     }));
@@ -817,17 +838,32 @@ export default function App() {
       recovered: false
     };
 
-    // Horta Hidropônica gera mesmo se ele morrer
     const hortaBonus = gameState.buildings.horta > 0 ? 3 : 0;
     
+    // Process incubator queue even on death
+    const newQueue: typeof gameState.incubatorQueue = [];
+    const newStash = [...gameState.stash];
+    const incubatorLogs: string[] = [];
+    
+    (gameState.incubatorQueue || []).forEach(q => {
+      if (q.expeditionsLeft <= 1) {
+        newStash.push({ id: q.petId, usesRemaining: null });
+        incubatorLogs.push(`Um ovo eclodiu no acampamento durante a sua ausência!`);
+      } else {
+        newQueue.push({ ...q, expeditionsLeft: q.expeditionsLeft - 1 });
+      }
+    });
+    
+    let baseLog = hortaBonus > 0 
+      ? ['O batedor não retornou. Todos os recursos foram perdidos.', `A Horta gerou +${hortaBonus} comida passivamente.`]
+      : ['O batedor não retornou. Todos os recursos foram perdidos.'];
+
     const report: ExpeditionReport = {
       status: 'death' as const,
       leaderName: gameState.leader.name,
       cardsExplored: exp.cardIndex,
-      loot: { sucata: 0, comida: hortaBonus, remedio: 0, items: [] }, // Perdeu tudo, mas horta ficou na base
-      log: hortaBonus > 0 
-        ? ['O batedor não retornou. Todos os itens coletados foram perdidos na selva.', `A Horta gerou +${hortaBonus} comida passivamente no acampamento.`]
-        : ['O batedor não retornou. Todos os itens e recursos coletados foram perdidos na selva.']
+      loot: { sucata: 0, comida: hortaBonus, remedio: 0, items: [] },
+      log: [...baseLog, ...incubatorLogs]
     };
 
     setGameState(prev => ({
@@ -836,6 +872,8 @@ export default function App() {
         ...prev.camp,
         comida: prev.camp.comida + hortaBonus
       },
+      stash: newStash,
+      incubatorQueue: newQueue,
       deadLeaders: [...prev.deadLeaders, deadRecord],
       leader: null,
       activeExpedition: null,
@@ -1310,7 +1348,7 @@ export default function App() {
 
         {/* Cena viva do acampamento */}
         <div className="mt-3">
-          <CampScene buildings={gameState.buildings} survivors={gameState.pool.length} stash={gameState.stash} />
+          <CampScene buildings={gameState.buildings} survivors={gameState.pool.length} stash={gameState.stash} incubatorQueue={gameState.incubatorQueue} />
         </div>
 
         {/* Recursos Centrais */}
@@ -1424,7 +1462,7 @@ export default function App() {
                       <span>{def.name}</span>
                     </span>
                     <button
-                      onClick={() => handleHatch(idx, mappedPetId)}
+                      onClick={() => handleHatch(idx, item.id, mappedPetId)}
                       className="px-2 py-1 bg-[#2e281e] border border-[#4a3e2a] rounded text-xs hover:bg-[#3d3427] text-[#e0d8c3]"
                     >
                       Chocar
@@ -1432,9 +1470,20 @@ export default function App() {
                   </div>
                 );
               })}
-              {gameState.stash.filter(i => ITEM_CATALOG[i.id]?.tags?.includes('ovo')).length === 0 && (
-                <div className="text-[11px] text-[#857f70] text-center p-2">Nenhum ovo para chocar.</div>
+              {gameState.stash.filter(i => ITEM_CATALOG[i.id]?.tags?.includes('ovo')).length === 0 && (!gameState.incubatorQueue || gameState.incubatorQueue.length === 0) && (
+                <div className="text-[11px] text-[#857f70] text-center p-2">Nenhum ovo na fila ou na mochila.</div>
               )}
+              {gameState.incubatorQueue?.map((q, idx) => (
+                <div key={`q-${idx}`} className="flex justify-between items-center py-1 border-b border-[#1f281b] last:border-0 opacity-75">
+                  <span className="flex items-center gap-1.5">
+                    <ItemIcon id={q.eggId} size={15} />
+                    <span>{ITEM_CATALOG[q.eggId].name}</span>
+                  </span>
+                  <span className="text-[10px] text-[#8fd16a]">
+                    Pronto em {q.expeditionsLeft} expediç{q.expeditionsLeft === 1 ? 'ão' : 'ões'}
+                  </span>
+                </div>
+              ))}
             </div>
           </>
         )}

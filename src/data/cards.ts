@@ -17,7 +17,7 @@ export const ALL_CARDS: CardDef[] = [
       {
         text: 'Arremessar uma Ração aberta (-1 comida)',
         isGuaranteed: true,
-        successEffect: { comida: -1 },
+        successEffect: { food:  },
         successMsg: 'O bando disputa a carne freneticamente. Você avança sem barulho pelo flanco.',
       },
       {
@@ -133,13 +133,13 @@ export const ALL_CARDS: CardDef[] = [
         attr: 'agil',
         baseChance: 45,
         successMsg: 'Com braçadas vigorosas você atinge a outra margem ensopado, mas inteiro.',
-        failEffect: { hp: -20, comida: -1 },
+        failEffect: { hp: -20, food:  },
         failMsg: 'A correnteza te arremessa contra rochas submersas e parte de suas rações é levada pela água.',
       },
       {
         text: 'Contornar a pé pela nascente (-2 comida)',
         isGuaranteed: true,
-        successEffect: { comida: -2 },
+        successEffect: { food:  },
         successMsg: 'Horas exaustivas de caminhada contornando o vale fluvial. Seguro, porém custoso.',
       },
     ],
@@ -269,7 +269,7 @@ export const ALL_CARDS: CardDef[] = [
       {
         text: 'Tratar os ferimentos e escoltar (-1 comida)',
         isGuaranteed: true,
-        successEffect: { comida: -1, survivorBonus: 1 },
+        successEffect: { food: , survivorBonus: 1 },
         successMsg: 'Você estabiliza o pulso dele com suas rações. Ele aceita se juntar ao seu acampamento!',
       },
       {
@@ -321,7 +321,7 @@ export const ALL_CARDS: CardDef[] = [
       {
         text: 'Aguardar o temporal em uma gruta (-1 comida)',
         isGuaranteed: true,
-        successEffect: { comida: -1 },
+        successEffect: { food:  },
         successMsg: 'Você raciona seu alimento em segurança enquanto a ventania varre as copas das árvores.',
       },
       {
