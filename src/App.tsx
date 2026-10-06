@@ -529,7 +529,7 @@ export default function App() {
     setRollingDice(true);
     sfx.roll();
 
-    let chance = action === 'attack' ? enemy.def.combatChance : enemy.def.fleeChance;
+    let chance = action === 'attack' ? enemy.def.combatChance : (enemy.def.fleeChance + 15);
     const attr = action === 'attack' ? 'combate' : 'agil';
     
     const origin = SURVIVOR_ORIGINS[gameState.leader!.origin];
@@ -699,7 +699,7 @@ export default function App() {
 
   const handleHealWithKit = () => {
     if (!gameState.activeExpedition) return;
-    const kitIdx = gameState.activeExpedition.pack.findIndex(i => ITEM_CATALOG[i.id].heal);
+    const kitIdx = gameState.activeExpedition.pack.findIndex(i => ITEM_CATALOG[i.id]?.heal);
     if (kitIdx === -1) return;
 
     sfx.click();
@@ -1024,7 +1024,7 @@ export default function App() {
   if (gameState.activeExpedition) {
     const exp = gameState.activeExpedition;
     const card = exp.currentCard;
-    const hasKit = exp.pack.some((i) => ITEM_CATALOG[i.id].heal);
+    const hasKit = exp.pack.some((i) => ITEM_CATALOG[i.id]?.heal);
 
     return (
       <div className="min-h-screen bg-[#121612] text-[#e0d8c3] flex justify-center p-3">
@@ -1114,9 +1114,15 @@ export default function App() {
                       <h2 className="text-lg font-bold text-[#e0604a] mb-1">{exp.activeEnemy.def.name}</h2>
                       <p className="text-xs text-[#c5bfae] mb-4">{card.desc}</p>
                       
-                      <div className="flex justify-between items-center text-xs font-mono bg-[#121612] p-2 rounded mb-4">
-                        <span className="text-[#e0604a]">HP Inimigo: {exp.activeEnemy.hp}/{exp.activeEnemy.maxHp}</span>
+                      <div className="flex justify-between items-center text-xs font-mono bg-[#121612] px-2 py-1.5 rounded-t mt-4 border-b border-[#2c3826]">
+                        <span className="text-[#e0604a]">HP Inimigo: {Math.max(0, exp.activeEnemy.hp)}/{exp.activeEnemy.maxHp}</span>
                         <span className="text-[#ffd54a]">Dano: {exp.activeEnemy.def.damage}</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-[#251212] rounded-b overflow-hidden mb-4">
+                        <div
+                          className="h-full bg-[#e0604a] transition-all duration-300"
+                          style={{ width: `${(Math.max(0, exp.activeEnemy.hp) / exp.activeEnemy.maxHp) * 100}%` }}
+                        />
                       </div>
 
                       <div className="space-y-2">
@@ -1132,7 +1138,7 @@ export default function App() {
                           onClick={() => handleCombatAction('flee')}
                           className="w-full py-3 bg-[#2e281e] text-[#e0d8c3] font-bold rounded-lg text-sm hover:brightness-110 disabled:opacity-50"
                         >
-                          Tentar Fugir ({exp.activeEnemy.def.fleeChance}% chance base)
+                          Tentar Fugir ({exp.activeEnemy.def.fleeChance + 15}% chance base)
                         </button>
                       </div>
                     </div>
