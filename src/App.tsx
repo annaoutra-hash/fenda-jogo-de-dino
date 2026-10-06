@@ -89,6 +89,9 @@ export default function App() {
       loreLogs: [],
       deadLeaders: [],
       generation: 0,
+      expeditionCount: 0,
+      introSeen: false,
+      gameLostMeteor: false,
       activeExpedition: null,
       expeditionSetup: null,
       report: null,
@@ -831,7 +834,9 @@ export default function App() {
       stash: newStash,
       incubatorQueue: newQueue,
       activeExpedition: null,
-      report
+      report,
+      expeditionCount: (prev.expeditionCount || 0) + 1,
+      gameLostMeteor: (prev.expeditionCount || 0) + 1 > 35
     }));
   };
 
@@ -887,7 +892,9 @@ export default function App() {
       deadLeaders: [...prev.deadLeaders, deadRecord],
       leader: null,
       activeExpedition: null,
-      report
+      report,
+      expeditionCount: (prev.expeditionCount || 0) + 1,
+      gameLostMeteor: (prev.expeditionCount || 0) + 1 > 35
     }));
   };
 
@@ -946,6 +953,89 @@ export default function App() {
     );
   }
 
+  if (gameState.gameLostMeteor) {
+    return (
+      <div className="min-h-screen bg-[#1c0f0f] text-[#e0d8c3] flex items-center justify-center p-4 overflow-hidden relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#ff4d4d]/20 via-[#1c0f0f] to-[#1c0f0f]"></div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-md w-full bg-[#201010] border border-[#ff4d4d]/30 rounded-2xl p-6 text-center shadow-2xl relative z-10"
+        >
+          <div className="flex justify-center mb-4 opacity-80">
+            <svg width="120" height="120" viewBox="0 0 120 120" className="drop-shadow-[0_0_15px_rgba(255,77,77,0.5)]">
+              <circle cx="90" cy="30" r="15" fill="#ff4d4d" />
+              <path d="M 90,30 L 10,110 L 20,115 Z" fill="#ff4d4d" opacity="0.3" />
+              <path d="M 85,25 L 0,105 L 10,115 Z" fill="#ff4d4d" opacity="0.1" />
+              <circle cx="85" cy="35" r="4" fill="#fff" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-[#ff4d4d] mb-2 tracking-widest">O FIM</h1>
+          <p className="text-sm text-[#ff9999] mb-4 leading-relaxed">
+            O meteoro de Chicxulub cortou o céu como um segundo sol. O ar se transformou em fogo, e a terra derreteu sob seus pés.
+            A Fenda Cretácea foi selada para sempre.
+          </p>
+          <p className="text-xs text-[#857f70] mb-6">
+            A colônia resistiu por {gameState.expeditionCount} expedições antes da extinção.
+          </p>
+          <button
+            onClick={() => {
+              sfx.click();
+              localStorage.removeItem(STORAGE_KEY);
+              window.location.reload();
+            }}
+            className="w-full py-3 bg-[#4a1c1c] text-[#ffb0b0] font-bold rounded-lg hover:bg-[#5a2222] transition uppercase tracking-wider"
+          >
+            Apagar Arquivo e Recomeçar
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (!gameState.introSeen) {
+    return (
+      <div className="min-h-screen bg-[#000] text-[#e0d8c3] flex flex-col items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 }}
+          className="max-w-md w-full flex flex-col items-center text-center space-y-6"
+        >
+          <svg width="200" height="100" viewBox="0 0 200 100">
+            <path d="M 80,10 Q 100,50 120,90 Q 90,70 70,50 Q 80,30 80,10 Z" fill="#4a8270" opacity="0.8" className="animate-pulse" />
+            <path d="M 85,15 Q 100,50 115,85 Q 92,68 75,50 Q 82,32 85,15 Z" fill="#8fd16a" />
+            <circle cx="100" cy="50" r="2" fill="#fff" />
+          </svg>
+          
+          <div className="space-y-4">
+            <p className="text-sm text-[#c5bfae] italic">
+              "Projeto TÊMPORA. Teste de ressonância número 40."
+            </p>
+            <p className="text-sm text-[#e0d8c3]">
+              A falha na máquina abriu uma costura no tempo. 
+              Um vagão do metrô. Um voo comercial. O seu carro. 
+              Tudo sendo puxado para 66 milhões de anos no passado.
+            </p>
+            <p className="text-sm text-[#e0d8c3]">
+              O céu tem dois sois. Um deles é maior a cada dia. Você não tem muito tempo antes da extinção.
+            </p>
+          </div>
+
+          <button
+            onClick={() => {
+              sfx.click();
+              setGameState(prev => ({ ...prev, introSeen: true }));
+            }}
+            className="mt-8 px-6 py-3 border border-[#4a8270] text-[#8fd16a] rounded hover:bg-[#4a8270]/10 transition-all font-mono text-sm uppercase tracking-wider"
+          >
+            Abrir os olhos
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
+
   // 2. Tela de Vitória
   if (gameState.gameWon) {
     return (
@@ -959,12 +1049,21 @@ export default function App() {
             <CardArt biome="noite" silhouette="fenda" />
           </div>
           <h1 className="text-2xl font-bold text-[#e57a3b] mb-2">A FENDA — O RETORNO</h1>
-          <p className="text-sm text-[#c5bfae] mb-4 leading-relaxed">
-            {gameState.leader?.name} cruzou a fronteira quântica de volta a 2026. As buzinas do trânsito
-            paulistano ecoam enquanto seus pés tocam o asfalto molhado.
-          </p>
+          
+          {gameState.stash.some(i => i.id === 'cracha_tempora') ? (
+            <div className="text-sm text-[#c5bfae] mb-4 leading-relaxed">
+              <p>A luz pisca. Você não está na rua. Está no centro de pesquisa do Projeto TÊMPORA, minutos ANTES do acidente.</p>
+              <p className="mt-2 text-[#4a8270] font-bold">Você encontrou o próprio crachá antes de cair. Foi você quem iniciou a Fenda.</p>
+            </div>
+          ) : (
+            <p className="text-sm text-[#c5bfae] mb-4 leading-relaxed">
+              {gameState.leader?.name} cruzou a fronteira quântica de volta a 2026. As buzinas do trânsito
+              paulistano ecoam enquanto seus pés tocam o asfalto molhado.
+            </p>
+          )}
+
           <p className="text-xs text-[#857f70] mb-6">
-            A colônia resistiu por {gameState.generation} gerações de líderes. {gameState.deadLeaders.length} companheiros
+            A colônia resistiu por {gameState.expeditionCount} expedições. {gameState.deadLeaders.length} companheiros
             tombaram no cretáceo.
           </p>
           <button
@@ -1353,6 +1452,9 @@ export default function App() {
           <p className="text-xs text-[#857f70] mt-0.5">
             Líder: <b className="text-[#e0d8c3]">{gameState.leader.name}</b> ({leaderOrigin.name})
           </p>
+          <div className="mt-2 inline-block px-3 py-1 bg-[#1a0f0f] border border-[#ff4d4d]/30 text-[#ff4d4d] text-[10px] font-mono rounded tracking-widest uppercase shadow-[0_0_8px_rgba(255,77,77,0.15)]">
+            Alerta: Impacto estimado em {35 - (gameState.expeditionCount || 0)} expediç{35 - (gameState.expeditionCount || 0) === 1 ? 'ão' : 'ões'}
+          </div>
           <p className="text-[11px] text-[#4a8270] font-mono mt-0.5">{leaderOrigin.trait}</p>
         </div>
 

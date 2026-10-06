@@ -138,6 +138,37 @@ export const EXTRA_CARDS: CardDef[] = [
     ],
   },
   {
+    id: 'laboratorio_tempora',
+    title: 'Módulo TÊMPORA',
+    desc: 'Um contêiner de aço branco, esmagado contra as rochas. O logotipo do Projeto TÊMPORA está parcialmente derretido. A porta foi trancada pelo lado de fora.',
+    biome: 'ruinas',
+    silhouette: 'container',
+    options: [
+      {
+        text: 'Arrombar a porta selada',
+        reqTag: 'arrombar',
+        successEffect: { 
+          item: 'cracha_tempora', 
+          sucata: 4, 
+          logEntry: { 
+            title: 'Dr. Alencar - Registro Final', 
+            text: '"Eles não me ouviram. O conselho sabia que a ressonância desestabilizaria a fenda, mas queriam resultados. Quando tentei desligar o núcleo, eles me trancaram no módulo auxiliar... e o módulo caiu na fenda junto com o resto. Foi nós quem começamos isso."' 
+          } 
+        },
+        successMsg: 'O corpo do Dr. Alencar jaz no escuro, segurando um gravador. Você pega o crachá e escuta a verdade terrível.',
+      },
+      {
+        text: 'Forçar a escotilha no teto',
+        attr: 'agil',
+        baseChance: 65,
+        successEffect: { sucata: 6, remedio: 1 },
+        successMsg: 'Você ignora o interior e arranca painéis solares do teto.',
+        failEffect: { hp: -15 },
+        failMsg: 'A estrutura cede e você cai de mau jeito antes de entrar.',
+      },
+    ],
+  },
+  {
     id: 'posto_gasolina',
     title: 'Posto de Gasolina Engolido',
     desc: 'Um posto inteiro, com bombas e loja de conveniência, meio afundado num pântano.',

@@ -137,6 +137,9 @@ export interface GameState {
   loreLogs: { title: string; text: string }[];
   deadLeaders: DeadLeaderRecord[];
   generation: number;
+  expeditionCount: number;
+  introSeen: boolean;
+  gameLostMeteor: boolean;
   activeExpedition: ExpeditionState | null;
   expeditionSetup: {
     configuring: boolean;

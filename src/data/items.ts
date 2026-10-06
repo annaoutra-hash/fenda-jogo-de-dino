@@ -161,6 +161,16 @@ export const ITEM_CATALOG: Record<string, ItemDef> = {
     uses: null,
     cost: null,
     level: 3,
+  },
+  cracha_tempora: {
+    id: 'cracha_tempora',
+    name: 'Crachá: Dr. Alencar (TÊMPORA)',
+    desc: 'Um crachá da instalação de pesquisa 2026. Ele sabia que o acidente aconteceria e tentou parar a máquina.',
+    tags: ['tempora'],
+    bonus: { sobrev: 5 },
+    uses: null,
+    cost: null,
+    level: 9,
   }
 };
 
