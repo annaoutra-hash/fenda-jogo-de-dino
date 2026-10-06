@@ -89,7 +89,7 @@ export function SwipeableCard({
             <span>{leftOption?.text}</span>
           </div>
           <span className="shrink-0 px-2 py-0.5 rounded bg-[#2b3924] text-[#e0d8c3] text-xs font-mono font-bold border border-[#3e5235]">
-            {leftOption?.reqTag || leftOption?.isGuaranteed ? 'Certeiro' : `${calculateChance(leftOption)}%`}
+            {leftOption?.reqTag || leftOption?.isGuaranteed ? 'Certeiro' : leftOption?.triggerMinigame ? 'Desafio' : `${calculateChance(leftOption)}%`}
           </span>
         </motion.div>
 
@@ -103,7 +103,7 @@ export function SwipeableCard({
             <ArrowRight size={16} className="text-[#e0d8c3] shrink-0" />
           </div>
           <span className="shrink-0 px-2 py-0.5 rounded bg-[#2b3924] text-[#e0d8c3] text-xs font-mono font-bold border border-[#3e5235]">
-            {rightOption?.reqTag || rightOption?.isGuaranteed ? 'Certeiro' : `${calculateChance(rightOption)}%`}
+            {rightOption?.reqTag || rightOption?.isGuaranteed ? 'Certeiro' : rightOption?.triggerMinigame ? 'Desafio' : `${calculateChance(rightOption)}%`}
           </span>
         </motion.div>
 
@@ -118,7 +118,7 @@ export function SwipeableCard({
               <span>{upOption.text}</span>
             </div>
             <span className="shrink-0 px-2 py-0.5 rounded bg-[#2b3924] text-[#e0d8c3] text-xs font-mono font-bold border border-[#3e5235]">
-              {upOption.reqTag || upOption.isGuaranteed ? 'Certeiro' : `${calculateChance(upOption)}%`}
+              {upOption.reqTag || upOption.isGuaranteed ? 'Certeiro' : upOption.triggerMinigame ? 'Desafio' : `${calculateChance(upOption)}%`}
             </span>
           </motion.div>
         )}
@@ -186,7 +186,7 @@ export function SwipeableCard({
                 <span>{opt.text}</span>
               </span>
               <span className={`shrink-0 font-bold font-mono ${!afford ? 'text-[#555]' : 'text-[#a4c794]'}`}>
-                {isGuaranteed ? 'Certeiro' : `${chance}%`}
+                {isGuaranteed ? 'Certeiro' : opt.triggerMinigame ? 'Desafio' : `${chance}%`}
               </span>
             </button>
           );
