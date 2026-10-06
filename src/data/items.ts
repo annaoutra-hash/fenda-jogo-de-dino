@@ -196,8 +196,8 @@ export const BUILDINGS_CONFIG = {
   radio: {
     name: 'Torre de Rádio Amador',
     maxLevel: 1,
-    costs: [10],
-    desc: 'Transmite na frequência de emergência: capta outros sobreviventes e localiza a Fenda.',
+    costs: [30],
+    desc: 'Transmissor de alta potência. Exige Bancada Nv2 e Bateria Náutica do Rio para ser montado.',
   },
   incubadora: {
     name: 'Incubadora Geotérmica',

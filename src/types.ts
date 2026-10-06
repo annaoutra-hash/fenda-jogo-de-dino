@@ -61,6 +61,7 @@ export interface Effect {
   tradeItemRandom?: boolean;
   nextCard?: string;
   survivorBonus?: number;
+  cristaisTemporais?: number;
   logEntry?: { title: string; text: string };
   ending?: boolean;
 }
@@ -146,6 +147,7 @@ export interface GameState {
   gameLostMeteor: boolean;
   gameLostPop: boolean;
   population: number;
+  cristaisTemporais: number;
   activeExpedition: ExpeditionState | null;
   expeditionSetup: {
     configuring: boolean;
@@ -169,6 +171,7 @@ export interface ExpeditionState {
     comida: number;
     remedio: number;
     items: ItemInstance[];
+    cristaisTemporais?: number;
   };
   currentCard: CardDef;
   activeEnemy?: EnemyState;

@@ -407,7 +407,7 @@ export const ALL_CARDS: CardDef[] = [
   {
     id: 'bunker',
     title: 'O Bunker do Projeto Fenda',
-    desc: 'Seguindo as coordenadas da fita cassete, você encontra uma escotilha militar de aço blindado gravada: "ACESSO RESTRITO - PROJETO FENDA".',
+    desc: 'Seguindo as coordenadas da fita, você destranca a escotilha militar. Em um terminal que pisca em verde, o Dr. Alencar deixou o "Protocolo de Retorno": para abrir o portal, a Torre de Rádio precisa sincronizar: 1. Caixa Preta do Avião, 2. Diário do Acampamento Científico, e 3. Pelo menos 2 Cristais Temporais da Tempestade.',
     biome: 'ruinas',
     silhouette: 'bunker',
     once: true,
@@ -416,15 +416,31 @@ export const ALL_CARDS: CardDef[] = [
       {
         text: 'Estourar os trincos com o Pé-de-Cabra',
         reqTag: 'arrombar',
-        successEffect: { sucata: 8, item: 'colar', flag: 'bunker' },
-        successMsg: 'Os selos de aço se rompem! No interior: arquivos detalhados da fenda temporal e um amuleto tribal com dente fóssil!',
+        successEffect: {
+          sucata: 8,
+          item: 'colar',
+          flag: 'bunker',
+          logEntry: {
+            title: 'Protocolo de Retorno da TÊMPORA',
+            text: 'Requisitos para o portal: Torre de Rádio (Bateria Náutica do Rio + Bancada Lv2), Caixa Preta (Avião), Diário de Campo (Selva) e 2 Cristais Temporais (Tempestade).'
+          }
+        },
+        successMsg: 'Os selos de aço se rompem! Você copia o Protocolo de Retorno e resgata um amuleto tribal!',
       },
       {
         text: 'Inserir a combinação sonora da fita',
         attr: 'sobrev',
         baseChance: 45,
-        successEffect: { sucata: 6, item: 'colar', flag: 'bunker' },
-        successMsg: 'A tranca pneumática abre com um sopro de ar pressurizado. Documentos e o amuleto resgatados!',
+        successEffect: {
+          sucata: 6,
+          item: 'colar',
+          flag: 'bunker',
+          logEntry: {
+            title: 'Protocolo de Retorno da TÊMPORA',
+            text: 'Requisitos para o portal: Torre de Rádio (Bateria Náutica do Rio + Bancada Lv2), Caixa Preta (Avião), Diário de Campo (Selva) e 2 Cristais Temporais (Tempestade).'
+          }
+        },
+        successMsg: 'A tranca pneumática abre. O Protocolo de Retorno e o amuleto foram resgatados!',
         failEffect: { hp: -20 },
         failMsg: 'Sequência errada. Válvulas de gás lacrimogêneo de defesa disparam no seu rosto.',
       },
@@ -461,11 +477,16 @@ export const ALL_CARDS: CardDef[] = [
   {
     id: 'fenda',
     title: 'A Fenda Quântica Aberta',
-    desc: 'O ar chia com eletricidade estática. Um rasgo vertical de pura luz esmeralda corta a selva. Do outro lado, o ronco de motores e tráfego de 2026.',
+    desc: 'O ar chia com eletricidade estática. Com o sinal da Torre de Rádio alimentada, os 2 cristais temporais ressoam e a frequência da caixa preta estabiliza o rasgo verde. Do outro lado, o tráfego de 2026!',
     biome: 'noite',
     silhouette: 'fenda',
     once: true,
-    condition: (state: GameState) => !!state.flags.bunker && state.buildings.radio > 0,
+    condition: (state: GameState) =>
+      state.buildings.radio > 0 &&
+      !!state.flags.bunker &&
+      !!state.flags.caixa_preta &&
+      !!state.flags.diario_cientista &&
+      (state.cristaisTemporais || 0) >= 2,
     options: [
       {
         text: 'Atravessar o portal de volta para o século XXI',

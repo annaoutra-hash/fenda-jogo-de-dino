@@ -1,0 +1,817 @@
+[
+  {
+    "id": "compys",
+    "titulo": "Bando de Compsognatos",
+    "bioma": "selva",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Erguer o Colar com Dente de Rex",
+        "exige": "Tag: medo",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Arremessar uma Ração aberta (-1 comida)",
+        "exige": "Garantido",
+        "daSucesso": "-1 ração",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Disparar a Espingarda Calibre 12",
+        "exige": "Tag: tiro",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Espantar no grito e cajado",
+        "exige": "Garantido | Combate: Bando de Compys",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "raptors",
+    "titulo": "Raptores na Noite",
+    "bioma": "noite",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Acender o Sinalizador Químico",
+        "exige": "Tag: fogo",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Apresentar o Colar com Dente de Rex",
+        "exige": "Tag: medo",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Combater com arma branca",
+        "exige": "Garantido | Combate: Raptores",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Esgueirar-se por entre as pedras",
+        "exige": "Teste: furtivo (35%)",
+        "daSucesso": "Nenhum",
+        "falha": "-25 HP"
+      }
+    ]
+  },
+  {
+    "id": "metro",
+    "titulo": "Vagão de Metrô no Barranco",
+    "bioma": "ruinas",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Forçar a porta com o Pé-de-Cabra",
+        "exige": "Tag: arrombar",
+        "daSucesso": "+4 sucata, Flag: fita",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Escalar pela janela de emergência",
+        "exige": "Teste: agil (50%)",
+        "daSucesso": "+3 sucata, Flag: fita",
+        "falha": "-10 HP"
+      },
+      {
+        "text": "Ignorar o vagão e seguir a trilha",
+        "exige": "Garantido",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "rio",
+    "titulo": "Rio Caudaloso",
+    "bioma": "rio",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Atravessar pelas copas usando a Corda",
+        "exige": "Tag: escalar",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Nadar com velocidade máxima",
+        "exige": "Teste: agil (45%)",
+        "daSucesso": "Nenhum",
+        "falha": "-20 HP, -1 ração"
+      },
+      {
+        "text": "Contornar a pé pela nascente (-2 comida)",
+        "exige": "Garantido",
+        "daSucesso": "-2 ração",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "carcaca",
+    "titulo": "Carcaça de Tricerátopo",
+    "bioma": "selva",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Extrair mantimentos com pressa",
+        "exige": "Teste: sobrev (55%)",
+        "daSucesso": "+5 comida",
+        "falha": "-20 HP"
+      },
+      {
+        "text": "Dispersar carniceiros com o Apito",
+        "exige": "Tag: distrair",
+        "daSucesso": "+4 comida",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Evitar a armadilha óbvia",
+        "exige": "Garantido",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "container",
+    "titulo": "Contêiner Marítimo Lacrado",
+    "bioma": "ruinas",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Romper a corrente com o Pé-de-Cabra",
+        "exige": "Tag: arrombar",
+        "daSucesso": "+5 sucata, +2 remédio",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Martelar a trava com rocha sólida",
+        "exige": "Teste: arrombar (35%)",
+        "daSucesso": "+4 sucata",
+        "falha": "-10 HP"
+      },
+      {
+        "text": "Não mexer no contêiner",
+        "exige": "Garantido",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "ninho",
+    "titulo": "Ninho Desprotegido",
+    "bioma": "selva",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Furtar um ovo para a comunidade",
+        "exige": "Teste: furtivo (40%)",
+        "daSucesso": "+4 comida",
+        "falha": "-30 HP"
+      },
+      {
+        "text": "Apenas registrar a localização e recuar",
+        "exige": "Garantido",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "restos_lider",
+    "titulo": "Mochila do Antigo Batedor",
+    "bioma": "selva",
+    "condicao": "Possui condição especial",
+    "options": [
+      {
+        "text": "Recuperar com cautela o equipamento perdido",
+        "exige": "Teste: sobrev (50%)",
+        "daSucesso": "Flag: resgate_corpo",
+        "falha": "-20 HP"
+      },
+      {
+        "text": "Cobrir os restos com pedras e seguir",
+        "exige": "Garantido",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "ferido",
+    "titulo": "Sobrevivente Enfraquecido",
+    "bioma": "selva",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Tratar os ferimentos e escoltar (-1 comida)",
+        "exige": "Garantido",
+        "daSucesso": "-1 ração, +1 sobrevivente",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Apenas recolher os recursos que ele carrega",
+        "exige": "Garantido",
+        "daSucesso": "+2 sucata",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "plantas",
+    "titulo": "Flora Bioluminescente",
+    "bioma": "selva",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Extrair a seiva com luvas para remédio",
+        "exige": "Teste: sobrev (60%)",
+        "daSucesso": "+2 remédio",
+        "falha": "-10 HP"
+      },
+      {
+        "text": "Ingerir as bagas para recuperar estamina",
+        "exige": "Teste: sobrev (45%)",
+        "daSucesso": "+25 HP",
+        "falha": "-20 HP"
+      }
+    ]
+  },
+  {
+    "id": "tempestade",
+    "titulo": "Tormenta Esmeralda",
+    "bioma": "tempestade",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Aguardar o temporal em uma gruta (-1 comida)",
+        "exige": "Garantido",
+        "daSucesso": "-1 ração",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Acelerar o passo sob os relâmpagos",
+        "exige": "Teste: agil (50%)",
+        "daSucesso": "Nenhum",
+        "falha": "-15 HP"
+      }
+    ]
+  },
+  {
+    "id": "ptero",
+    "titulo": "Sombra nas Alturas",
+    "bioma": "tempestade",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Disparar a Espingarda para o alto",
+        "exige": "Tag: tiro",
+        "daSucesso": "+1 sucata",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Camuflar-se sob samambaias gigantes",
+        "exige": "Teste: furtivo (50%)",
+        "daSucesso": "Nenhum",
+        "falha": "-15 HP"
+      }
+    ]
+  },
+  {
+    "id": "alfa",
+    "titulo": "O PREDADOR ALFA",
+    "bioma": "noite",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Disparar o Sinalizador Químico na mandíbula",
+        "exige": "Tag: fogo",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Frequência de emergência no Apito",
+        "exige": "Tag: distrair",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Combater com pura coragem e aço",
+        "exige": "Garantido | Combate: Tiranossauro Rex",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Mergulhar e camuflar o cheiro na lama",
+        "exige": "Teste: furtivo (30%)",
+        "daSucesso": "Nenhum",
+        "falha": "-50 HP"
+      }
+    ]
+  },
+  {
+    "id": "bunker",
+    "titulo": "O Bunker do Projeto Fenda",
+    "bioma": "ruinas",
+    "condicao": "Possui condição especial",
+    "options": [
+      {
+        "text": "Estourar os trincos com o Pé-de-Cabra",
+        "exige": "Tag: arrombar",
+        "daSucesso": "+8 sucata, Item: colar, Flag: bunker",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Inserir a combinação sonora da fita",
+        "exige": "Teste: sobrev (45%)",
+        "daSucesso": "+6 sucata, Item: colar, Flag: bunker",
+        "falha": "-20 HP"
+      }
+    ]
+  },
+  {
+    "id": "radio",
+    "titulo": "Transmissão no Rádio Amador",
+    "bioma": "ruinas",
+    "condicao": "Possui condição especial",
+    "options": [
+      {
+        "text": "Mapear as coordenadas e resgatar o grupo",
+        "exige": "Teste: sobrev (55%)",
+        "daSucesso": "+3 sucata, +1 sobrevivente",
+        "falha": "-20 HP"
+      },
+      {
+        "text": "Desligar o receptor e poupar esforços",
+        "exige": "Garantido",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "fenda",
+    "titulo": "A Fenda Quântica Aberta",
+    "bioma": "noite",
+    "condicao": "Possui condição especial",
+    "options": [
+      {
+        "text": "Atravessar o portal de volta para o século XXI",
+        "exige": "Garantido",
+        "daSucesso": "FIM DE JOGO (Vitória)",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Permanecer. O acampamento e os sobreviventes precisam de mim",
+        "exige": "Garantido",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "estegossauro",
+    "titulo": "Manada de Estegossauros",
+    "bioma": "selva",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Contornar a manada em silêncio",
+        "exige": "Teste: furtivo (65%)",
+        "daSucesso": "Nenhum",
+        "falha": "-20 HP"
+      },
+      {
+        "text": "Coletar folhas mastigadas e esterco (adubo)",
+        "exige": "Teste: sobrev (50%)",
+        "daSucesso": "+4 comida, +2 remédio",
+        "falha": "-15 HP"
+      },
+      {
+        "text": "Esperar a manada passar (-1 ração)",
+        "exige": "Garantido",
+        "daSucesso": "-1 ração",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "pomar",
+    "titulo": "Pomar de Cicadáceas",
+    "bioma": "selva",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Colher frutos com calma",
+        "exige": "Garantido",
+        "daSucesso": "+4 comida",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Escalar até os cachos mais altos com a corda",
+        "exige": "Tag: escalar",
+        "daSucesso": "+4 comida",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Descansar à sombra",
+        "exige": "Garantido",
+        "daSucesso": "+15 HP",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "dilofossauro",
+    "titulo": "Cuspidor de Veneno",
+    "bioma": "selva",
+    "condicao": "Livre",
+    "options": []
+  },
+  {
+    "id": "acampamento_abandonado",
+    "titulo": "Acampamento Abandonado",
+    "bioma": "selva",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Revirar as barracas",
+        "exige": "Garantido",
+        "daSucesso": "+3 sucata, +2 remédio",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Ler o diário de campo",
+        "exige": "Garantido",
+        "daSucesso": "Flag: diario_cientista",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "aviao",
+    "titulo": "Fuselagem do Voo 2026",
+    "bioma": "ruinas",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Vasculhar o compartimento de bagagem",
+        "exige": "Teste: agil (55%)",
+        "daSucesso": "+4 sucata, +1 comida",
+        "falha": "-10 HP"
+      },
+      {
+        "text": "Abrir a cabine do piloto com o pé-de-cabra",
+        "exige": "Tag: arrombar",
+        "daSucesso": "+5 sucata, Flag: caixa_preta",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Pegar o kit de primeiros socorros da parede",
+        "exige": "Garantido",
+        "daSucesso": "+2 remédio",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "laboratorio_tempora",
+    "titulo": "Módulo TÊMPORA",
+    "bioma": "ruinas",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Arrombar a porta selada",
+        "exige": "Tag: arrombar",
+        "daSucesso": "+4 sucata, Item: cracha_tempora",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Forçar a escotilha no teto",
+        "exige": "Teste: agil (65%)",
+        "daSucesso": "+6 sucata, +1 remédio",
+        "falha": "-15 HP"
+      }
+    ]
+  },
+  {
+    "id": "posto_gasolina",
+    "titulo": "Posto de Gasolina Engolido",
+    "bioma": "ruinas",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Saquear a loja de conveniência",
+        "exige": "Teste: agil (60%)",
+        "daSucesso": "+5 comida",
+        "falha": "-10 HP"
+      },
+      {
+        "text": "Desmontar as bombas por peças (Cuidado)",
+        "exige": "Minigame: dismantle",
+        "daSucesso": "+5 sucata",
+        "falha": "-15 HP"
+      }
+    ]
+  },
+  {
+    "id": "saqueadores",
+    "titulo": "Saqueadores Humanos",
+    "bioma": "ruinas",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Pagar pedágio (perde 2 rações)",
+        "exige": "Garantido",
+        "daSucesso": "-2 ração",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Intimidar com a espingarda",
+        "exige": "Tag: tiro",
+        "daSucesso": "+3 sucata",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Negociar e propor aliança",
+        "exige": "Teste: sobrev (35%)",
+        "daSucesso": "+1 sobrevivente",
+        "falha": "-20 HP, -1 ração"
+      },
+      {
+        "text": "Lutar (combate direto)",
+        "exige": "Garantido | Combate: Saqueadores",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "farmacia",
+    "titulo": "Farmácia Soterrada",
+    "bioma": "ruinas",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Rastejar por baixo dos escombros",
+        "exige": "Teste: agil (50%)",
+        "daSucesso": "+2 remédio",
+        "falha": "-15 HP"
+      },
+      {
+        "text": "Arrombar a porta dos fundos",
+        "exige": "Tag: arrombar",
+        "daSucesso": "+1 sucata, +2 remédio",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Desmontar o painel solar",
+        "exige": "Garantido",
+        "daSucesso": "+2 sucata",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "ninho_abandando",
+    "titulo": "Ninho Abandonado",
+    "bioma": "ruinas",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Roubar um ovo com cuidado",
+        "exige": "Teste: furtivo (60%)",
+        "daSucesso": "Item: ovo_trico",
+        "falha": "-20 HP"
+      },
+      {
+        "text": "Quebrar ovos para comer",
+        "exige": "Teste: sobrev (80%)",
+        "daSucesso": "+5 comida",
+        "falha": "-10 HP"
+      }
+    ]
+  },
+  {
+    "id": "sarcosuco",
+    "titulo": "Sarcosuchus na Margem",
+    "bioma": "rio",
+    "condicao": "Livre",
+    "options": []
+  },
+  {
+    "id": "pesca",
+    "titulo": "Remanso de Peixes",
+    "bioma": "rio",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Tentar pescar na margem",
+        "exige": "Minigame: fishing",
+        "daSucesso": "+5 comida",
+        "falha": "-1 ração"
+      },
+      {
+        "text": "Montar uma armadilha de galhos",
+        "exige": "Garantido",
+        "daSucesso": "+1 comida",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Encher os cantis e descansar",
+        "exige": "Garantido",
+        "daSucesso": "+10 HP",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "barco",
+    "titulo": "Lancha Encalhada",
+    "bioma": "rio",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Desmontar o motor de popa (Risco de Choque)",
+        "exige": "Minigame: dismantle",
+        "daSucesso": "+6 sucata",
+        "falha": "-10 HP"
+      },
+      {
+        "text": "Revistar a cabine",
+        "exige": "Garantido",
+        "daSucesso": "+1 sucata, +4 comida",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "cristal",
+    "titulo": "Cristais Temporais",
+    "bioma": "tempestade",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Extrair um cristal com cuidado",
+        "exige": "Teste: sobrev (45%)",
+        "daSucesso": "+5 sucata, Flag: cristal_temporal",
+        "falha": "-20 HP"
+      },
+      {
+        "text": "Juntar fragmentos soltos do chão",
+        "exige": "Garantido",
+        "daSucesso": "+2 sucata",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "anquilossauro",
+    "titulo": "Anquilossauro Assustado",
+    "bioma": "tempestade",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Abrigar-se atrás das rochas",
+        "exige": "Teste: agil (60%)",
+        "daSucesso": "Nenhum",
+        "falha": "-30 HP"
+      },
+      {
+        "text": "Acalmá-lo com o sinalizador (afastar)",
+        "exige": "Tag: fogo",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "gruta_seca",
+    "titulo": "Gruta Seca",
+    "bioma": "tempestade",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Acampar e se recuperar",
+        "exige": "Garantido",
+        "daSucesso": "+25 HP, -1 ração",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Explorar o fundo da gruta",
+        "exige": "Teste: furtivo (50%)",
+        "daSucesso": "+3 sucata, +2 remédio",
+        "falha": "-20 HP"
+      }
+    ]
+  },
+  {
+    "id": "troodon",
+    "titulo": "Olhos no Escuro",
+    "bioma": "noite",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Acender o sinalizador",
+        "exige": "Tag: fogo",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Manter a fogueira alta a noite toda (-1 ração)",
+        "exige": "Garantido",
+        "daSucesso": "-5 HP, -1 ração",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Atacar o líder do bando",
+        "exige": "Garantido | Combate: Troodonte Alfa",
+        "daSucesso": "Nenhum",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "ninho_raptor",
+    "titulo": "Ninho de Raptor",
+    "bioma": "noite",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Agarrar o ovo e correr",
+        "exige": "Teste: agil (55%)",
+        "daSucesso": "Item: ovo_raptor",
+        "falha": "-25 HP"
+      },
+      {
+        "text": "Afastar a mãe com fogo",
+        "exige": "Tag: fogo",
+        "daSucesso": "Item: ovo_raptor",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "vagalumes",
+    "titulo": "Clareira dos Vaga-lumes",
+    "bioma": "noite",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Descansar sob a luz",
+        "exige": "Garantido",
+        "daSucesso": "+20 HP",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Coletar insetos luminosos (fonte de luz)",
+        "exige": "Teste: agil (55%)",
+        "daSucesso": "+2 sucata",
+        "falha": "Sem dano"
+      }
+    ]
+  },
+  {
+    "id": "espinossauro",
+    "titulo": "Espinossauro Caçando",
+    "bioma": "noite",
+    "condicao": "Possui condição especial",
+    "options": []
+  },
+  {
+    "id": "mercador",
+    "titulo": "O Mercador da Lanterna",
+    "bioma": "noite",
+    "condicao": "Livre",
+    "options": [
+      {
+        "text": "Trocar 2 rações por sucata",
+        "exige": "Garantido",
+        "daSucesso": "+4 sucata, -2 ração",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Trocar um item cego com ele",
+        "exige": "Garantido",
+        "daSucesso": "Troca de item aleatória",
+        "falha": "Sem dano"
+      },
+      {
+        "text": "Ouvir as histórias dele",
+        "exige": "Garantido",
+        "daSucesso": "Flag: mercador_lore",
+        "falha": "Sem dano"
+      }
+    ]
+  }
+]

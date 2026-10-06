@@ -96,6 +96,7 @@ export default function App() {
       gameLostMeteor: false,
       gameLostPop: false,
       population: 12,
+      cristaisTemporais: 0,
       activeExpedition: null,
       expeditionSetup: null,
       report: null,
@@ -151,6 +152,13 @@ export default function App() {
     const cost = config.costs[currentLvl];
 
     if (gameState.camp.sucata < cost) return;
+
+    if (buildingKey === 'radio') {
+      if (gameState.buildings.bancada < 2 || !gameState.flags.bateria_nautica) {
+        return;
+      }
+    }
+
     sfx.click();
 
     setGameState(prev => ({
@@ -330,6 +338,21 @@ export default function App() {
       return true;
     });
 
+    // Clímax Garantido: Se todos os requisitos da Fenda estão cumpridos e fomos para a Noite
+    const fendaReady =
+      gameState.buildings.radio > 0 &&
+      !!gameState.flags.bunker &&
+      !!gameState.flags.caixa_preta &&
+      !!gameState.flags.diario_cientista &&
+      (gameState.cristaisTemporais || 0) >= 2;
+
+    if (fendaReady && preferredBiome === 'noite') {
+      const fendaCard = ALL_CARDS.find(c => c.id === 'fenda');
+      if (fendaCard && !seenIds.includes('fenda')) {
+        return fendaCard;
+      }
+    }
+
     // Pity System: RNG Mais Justo no late game
     if ((gameState.expeditionCount || 0) >= 25) {
       const pityCards = available.filter(c => ['metro', 'bunker', 'fenda'].includes(c.id));
@@ -444,6 +467,10 @@ export default function App() {
     }
     if (effect.flag) {
       gameState.flags[effect.flag] = true;
+    }
+    if (effect.cristaisTemporais) {
+      exp.loot.cristaisTemporais = (exp.loot.cristaisTemporais || 0) + effect.cristaisTemporais;
+      logs.push(`+${effect.cristaisTemporais} Cristal Temporal`);
     }
     if (effect.item) {
       exp.loot.items.push({ id: effect.item, usesRemaining: ITEM_CATALOG[effect.item].uses });
@@ -945,6 +972,11 @@ export default function App() {
         nextComida = 0;
       }
 
+      const cristaisGanhos = exp.loot.cristaisTemporais || 0;
+      if (cristaisGanhos > 0) {
+        report.log.push(`+${cristaisGanhos} Cristal(is) Temporal(is) armazenado(s) na colônia!`);
+      }
+
       return {
         ...prev,
         camp: {
@@ -953,6 +985,7 @@ export default function App() {
           remedio: prev.camp.remedio + exp.loot.remedio
         },
         population: nextPop,
+        cristaisTemporais: (prev.cristaisTemporais || 0) + cristaisGanhos,
         gameLostPop: nextPop <= 0,
         stash: newStash,
         incubatorQueue: newQueue,
@@ -1710,6 +1743,20 @@ export default function App() {
             const cost = b.costs[lvl];
             const isMax = lvl >= b.maxLevel;
 
+            // Bloqueio especial da Torre de Rádio
+            const isRadioBlocked =
+              key === 'radio' &&
+              (gameState.buildings.bancada < 2 || !gameState.flags.bateria_nautica);
+
+            const radioBlockReason =
+              key === 'radio' && isRadioBlocked
+                ? gameState.buildings.bancada < 2 && !gameState.flags.bateria_nautica
+                  ? 'Requer Bancada Lv2 e Bateria Náutica (Rio)'
+                  : gameState.buildings.bancada < 2
+                  ? 'Requer Bancada Lv2'
+                  : 'Requer Bateria Náutica (Lancha no Rio)'
+                : null;
+
             return (
               <div
                 key={key}
@@ -1720,14 +1767,19 @@ export default function App() {
                     {b.name} {lvl > 0 && <span className="text-[#e57a3b]">Lv{lvl}</span>}
                   </div>
                   <div className="text-[11px] text-[#857f70]">{b.desc}</div>
+                  {radioBlockReason && (
+                    <div className="text-[10px] text-[#e0604a] font-mono mt-0.5">
+                      🔒 {radioBlockReason}
+                    </div>
+                  )}
                 </div>
                 {isMax ? (
                   <span className="text-xs text-[#4a8270] font-bold">Completo</span>
                 ) : (
                   <button
-                    disabled={gameState.camp.sucata < cost}
+                    disabled={gameState.camp.sucata < cost || isRadioBlocked}
                     onClick={() => handleBuild(key)}
-                    className="px-2.5 py-1.5 bg-[#2c3826] text-[#e0d8c3] rounded font-mono hover:bg-[#3d4d34] disabled:opacity-30"
+                    className="px-2.5 py-1.5 bg-[#2c3826] text-[#e0d8c3] rounded font-mono hover:bg-[#3d4d34] disabled:opacity-30 disabled:hover:bg-[#2c3826]"
                   >
                     {cost} ⚙
                   </button>
@@ -1736,6 +1788,55 @@ export default function App() {
             );
           })}
         </div>
+
+        {/* Missão de Fuga: Checklist da Fenda */}
+        {(gameState.flags.bunker || gameState.buildings.radio > 0) && (
+          <div className="mt-5 bg-[#141b13] border border-[#3e5235] rounded-xl p-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-bold text-[#8fd16a] uppercase tracking-wider">
+                📡 Protocolo de Fuga: A Fenda
+              </span>
+              <span className="text-[10px] font-mono text-[#857f70]">
+                {
+                  [
+                    gameState.buildings.radio > 0,
+                    gameState.flags.bunker,
+                    gameState.flags.caixa_preta,
+                    gameState.flags.diario_cientista,
+                    (gameState.cristaisTemporais || 0) >= 2,
+                  ].filter(Boolean).length
+                }
+                /5 componentes
+              </span>
+            </div>
+            <div className="space-y-1 text-[11px] font-mono">
+              <div className={gameState.buildings.radio > 0 ? 'text-[#8fd16a]' : 'text-[#857f70]'}>
+                {gameState.buildings.radio > 0 ? '✓' : '○'} Torre de Rádio instalada (Bancada Lv2 + Bateria do Rio)
+              </div>
+              <div className={gameState.flags.bunker ? 'text-[#8fd16a]' : 'text-[#857f70]'}>
+                {gameState.flags.bunker ? '✓' : '○'} Coordenadas do Bunker (Ruínas / Fita)
+              </div>
+              <div className={gameState.flags.caixa_preta ? 'text-[#8fd16a]' : 'text-[#857f70]'}>
+                {gameState.flags.caixa_preta ? '✓' : '○'} Frequência da Caixa Preta (Voo 2026 nas Ruínas)
+              </div>
+              <div className={gameState.flags.diario_cientista ? 'text-[#8fd16a]' : 'text-[#857f70]'}>
+                {gameState.flags.diario_cientista ? '✓' : '○'} Diário de Campo da Equipe (Acampamento na Selva)
+              </div>
+              <div className={(gameState.cristaisTemporais || 0) >= 2 ? 'text-[#8fd16a]' : 'text-[#857f70]'}>
+                {(gameState.cristaisTemporais || 0) >= 2 ? '✓' : '○'} Cristais Temporais ({gameState.cristaisTemporais || 0}/2 coletados nas Tempestades)
+              </div>
+            </div>
+            {(gameState.buildings.radio > 0 &&
+              gameState.flags.bunker &&
+              gameState.flags.caixa_preta &&
+              gameState.flags.diario_cientista &&
+              (gameState.cristaisTemporais || 0) >= 2) && (
+              <div className="mt-2 p-1.5 bg-[#1b2b1e] border border-[#4a8270] rounded text-[11px] text-[#8fd16a] text-center font-bold animate-pulse">
+                ⚡ PORTAL ESTÁVEL: Parta para a NOITE para atravessar a Fenda!
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Bancada de Fabricação */}
         <h2 className="text-xs font-bold uppercase tracking-wider text-[#4a8270] mt-5 mb-2">
