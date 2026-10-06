@@ -67,6 +67,7 @@ export default function App() {
 
   const [rollingDice, setRollingDice] = useState<boolean>(false);
   const [diceDisplay, setDiceDisplay] = useState<number | null>(null);
+  const [campNameInput, setCampNameInput] = useState<string>('');
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
@@ -77,6 +78,7 @@ export default function App() {
     const p2 = generateRandomSurvivor();
     const p3 = generateRandomSurvivor();
     return {
+      campName: '',
       camp: { sucata: 6, comida: 8, remedio: 1 },
       buildings: { bancada: 1, defumador: 0, enfermaria: 0, radio: 0, incubadora: 0, horta: 0, torre: 0 },
       stash: [
@@ -92,6 +94,8 @@ export default function App() {
       expeditionCount: 0,
       introSeen: false,
       gameLostMeteor: false,
+      gameLostPop: false,
+      population: 12,
       activeExpedition: null,
       expeditionSetup: null,
       report: null,
@@ -220,7 +224,26 @@ export default function App() {
     const pack = gameState.stash.filter(s => s.selected);
     const remainingStash = gameState.stash.filter(s => !s.selected);
 
-    const firstCard = drawCard(undefined, null, []);
+    let firstCard = drawCard(undefined, null, []);
+    const lastDead = gameState.deadLeaders.length > 0 ? gameState.deadLeaders[gameState.deadLeaders.length - 1] : null;
+    
+    if (lastDead && !lastDead.recovered && lastDead.lostPack && lastDead.lostPack.length > 0) {
+      firstCard = {
+        id: 'corpo_batedor',
+        title: `Restos de ${lastDead.name}`,
+        desc: `No início da trilha, você encontra a mochila ensanguentada que pertencia a ${lastDead.name}. Os itens ainda estão lá.`,
+        biome: 'selva',
+        silhouette: 'acampamento',
+        options: [
+          {
+            text: 'Saquear a mochila',
+            isGuaranteed: true,
+            successEffect: { flag: 'recover_pack' },
+            successMsg: 'Os equipamentos do seu antecessor agora pertencem a você.',
+          }
+        ]
+      };
+    }
 
     setGameState(prev => ({
       ...prev,
@@ -260,8 +283,17 @@ export default function App() {
       if (card.condition && !card.condition(gameState)) return false;
       // Impedir repetição na mesma expedição
       if (seenIds.includes(card.id)) return false;
+      if (preferredBiome && card.biome !== preferredBiome && card.biome as string !== 'any') return false;
       return true;
     });
+
+    // Pity System: RNG Mais Justo no late game
+    if ((gameState.expeditionCount || 0) >= 25) {
+      const pityCards = available.filter(c => ['metro', 'bunker', 'fenda'].includes(c.id));
+      if (pityCards.length > 0 && Math.random() < 0.6) {
+        return pityCards[0];
+      }
+    }
 
     // Se todas as cartas válidas já foram vistas, permite não-consecutivas
     if (available.length === 0) {
@@ -534,6 +566,15 @@ export default function App() {
         exp.hp -= 8;
         result.log.push('Inanição: -8 Vida');
       }
+    }
+
+    if (gameState.flags['recover_pack']) {
+      const lastDead = gameState.deadLeaders[gameState.deadLeaders.length - 1];
+      if (lastDead && !lastDead.recovered) {
+        lastDead.recovered = true;
+        exp.pack.push(...lastDead.lostPack);
+      }
+      delete gameState.flags['recover_pack'];
     }
 
     setGameState(prev => prev.activeExpedition ? ({
@@ -881,24 +922,30 @@ export default function App() {
       log: [...baseLog, ...incubatorLogs]
     };
 
-    setGameState(prev => ({
-      ...prev,
-      camp: {
-        ...prev.camp,
-        comida: prev.camp.comida + hortaBonus
-      },
-      stash: newStash,
-      incubatorQueue: newQueue,
-      deadLeaders: [...prev.deadLeaders, deadRecord],
-      leader: null,
-      activeExpedition: null,
-      report,
-      expeditionCount: (prev.expeditionCount || 0) + 1,
-      gameLostMeteor: (prev.expeditionCount || 0) + 1 > 35
-    }));
+    setGameState(prev => {
+      const nextPop = (prev.population || 12) - 1;
+      return {
+        ...prev,
+        camp: {
+          ...prev.camp,
+          comida: prev.camp.comida + hortaBonus
+        },
+        stash: newStash,
+        incubatorQueue: newQueue,
+        deadLeaders: [...prev.deadLeaders, deadRecord],
+        leader: null,
+        activeExpedition: null,
+        report,
+        expeditionCount: (prev.expeditionCount || 0) + 1,
+        population: nextPop,
+        gameLostPop: nextPop <= 0,
+        gameLostMeteor: (prev.expeditionCount || 0) + 1 > 35
+      };
+    });
   };
 
   // ==================== RENDERS ====================
+  const bgClass = (gameState.expeditionCount || 0) >= 20 ? "bg-[#251010]" : "bg-[#121612]";
 
   // 1. Tela de Relatório de Expedição
   if (gameState.report) {
@@ -906,7 +953,7 @@ export default function App() {
     const isWin = r.status === 'victory';
     const isDeath = r.status === 'death';
     return (
-      <div className="min-h-screen bg-[#121612] text-[#e0d8c3] flex items-center justify-center p-4">
+      <div className={`min-h-screen ${bgClass} text-[#e0d8c3] flex items-center justify-center p-4`}>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -947,6 +994,39 @@ export default function App() {
             className="w-full py-3 bg-[#2e281e] text-[#e0d8c3] font-bold rounded-lg hover:bg-[#3d3427] transition"
           >
             Confirmar e Continuar
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (gameState.gameLostPop) {
+    return (
+      <div className="min-h-screen bg-[#1c0f0f] text-[#e0d8c3] flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full bg-[#201010] border border-[#ff4d4d]/30 rounded-2xl p-6 text-center shadow-2xl"
+        >
+          <div className="flex justify-center mb-4">
+            <Users size={48} className="text-[#ff4d4d]" />
+          </div>
+          <h1 className="text-2xl font-bold text-[#ff4d4d] mb-2">COLÔNIA EXTINTA</h1>
+          <p className="text-sm text-[#ff9999] mb-4 leading-relaxed">
+            As mortes constantes cobraram seu preço. Sem batedores ou esperança, os poucos sobreviventes restantes se dispersaram na selva para nunca mais serem vistos.
+          </p>
+          <p className="text-xs text-[#857f70] mb-6">
+            O {gameState.campName || 'Acampamento Central'} caiu após {gameState.expeditionCount} expedições.
+          </p>
+          <button
+            onClick={() => {
+              sfx.click();
+              localStorage.removeItem(STORAGE_KEY);
+              window.location.reload();
+            }}
+            className="w-full py-3 bg-[#4a1c1c] text-[#ffb0b0] font-bold rounded-lg hover:bg-[#5a2222] transition uppercase tracking-wider"
+          >
+            Apagar Arquivo e Recomeçar
           </button>
         </motion.div>
       </div>
@@ -1036,10 +1116,46 @@ export default function App() {
     );
   }
 
+  // 1d. Tela de Nomeação do Acampamento
+  if (!gameState.campName) {
+    return (
+      <div className={`min-h-screen ${bgClass} text-[#e0d8c3] flex flex-col items-center justify-center p-4`}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full bg-[#182017] border border-[#2b3924] rounded-2xl p-6 text-center shadow-2xl space-y-6"
+        >
+          <h1 className="text-xl font-bold text-[#e57a3b]">Fundação da Colônia</h1>
+          <p className="text-sm text-[#c5bfae]">
+            Os sobreviventes se reúnem em uma clareira segura. Para manter a esperança viva, vocês decidem dar um nome a este novo lar.
+          </p>
+          <input
+            type="text"
+            value={campNameInput}
+            onChange={e => setCampNameInput(e.target.value)}
+            placeholder="Ex: Refúgio Alfa, Nova Aurora..."
+            className="w-full bg-[#1e261a] border border-[#2e3a27] rounded-lg p-3 text-center text-[#e0d8c3] focus:outline-none focus:border-[#4a8270] focus:ring-1 focus:ring-[#4a8270]"
+            maxLength={25}
+          />
+          <button
+            onClick={() => {
+              const finalName = campNameInput.trim() || 'Acampamento Central';
+              sfx.click();
+              setGameState(prev => ({ ...prev, campName: finalName }));
+            }}
+            className="w-full py-3 bg-[#4a8270] text-[#121612] font-bold rounded-lg hover:brightness-110 transition"
+          >
+            Confirmar Nome
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
+
   // 2. Tela de Vitória
   if (gameState.gameWon) {
     return (
-      <div className="min-h-screen bg-[#121612] text-[#e0d8c3] flex items-center justify-center p-4">
+      <div className={`min-h-screen ${bgClass} text-[#e0d8c3] flex items-center justify-center p-4`}>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -1057,8 +1173,7 @@ export default function App() {
             </div>
           ) : (
             <p className="text-sm text-[#c5bfae] mb-4 leading-relaxed">
-              {gameState.leader?.name} cruzou a fronteira quântica de volta a 2026. As buzinas do trânsito
-              paulistano ecoam enquanto seus pés tocam o asfalto molhado.
+              O portal estabilizou. {gameState.leader?.name} liderou os {gameState.population} sobreviventes restantes do {gameState.campName || 'Acampamento Central'} de volta pela fronteira quântica. As buzinas do trânsito paulistano ecoam enquanto seus pés tocam o asfalto de 2026.
             </p>
           )}
 
@@ -1084,7 +1199,7 @@ export default function App() {
   if (!gameState.leader) {
     const lastDead = gameState.deadLeaders[gameState.deadLeaders.length - 1];
     return (
-      <div className="min-h-screen bg-[#121612] text-[#e0d8c3] flex justify-center p-4">
+      <div className={`min-h-screen ${bgClass} text-[#e0d8c3] flex justify-center p-4`}>
         <div className="w-full max-w-md">
           <h1 className="text-xl font-bold text-[#e57a3b] mb-1">
             {lastDead ? `${lastDead.name} não retornou da selva` : 'Fenda Temporal — Cretáceo'}
@@ -1140,7 +1255,7 @@ export default function App() {
     const setup = gameState.expeditionSetup;
     const maxFood = Math.min(gameState.camp.comida, gameState.buildings.defumador > 0 ? 8 : 5);
     return (
-      <div className="min-h-screen bg-[#121612] text-[#e0d8c3] flex items-center justify-center p-4">
+      <div className={`min-h-screen ${bgClass} text-[#e0d8c3] flex items-center justify-center p-4`}>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -1214,7 +1329,7 @@ export default function App() {
     const hasKit = exp.pack.some((i) => ITEM_CATALOG[i.id]?.heal);
 
     return (
-      <div className="min-h-screen bg-[#121612] text-[#e0d8c3] flex justify-center p-3">
+      <div className={`min-h-screen ${bgClass} text-[#e0d8c3] flex justify-center p-3`}>
         <div className="w-full max-w-md flex flex-col justify-between pb-6">
           {/* Barra Superior de Status */}
           <div>
@@ -1431,14 +1546,14 @@ export default function App() {
   const selectedCount = gameState.stash.filter((s) => s.selected).length;
 
   return (
-    <div className="min-h-screen bg-[#121612] text-[#e0d8c3] flex justify-center p-3 pb-12">
+    <div className={`min-h-screen ${bgClass} text-[#e0d8c3] flex justify-center p-3 pb-12`}>
       <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} />
       <div className="w-full max-w-md">
         {/* Cabeçalho do Líder */}
         <div>
           <h1 className="text-xl font-bold text-[#e0d8c3] flex items-center justify-between">
             <span className="flex items-center gap-2">
-              Acampamento
+              {gameState.campName}
               <button 
                 onClick={() => setShowHelp(true)}
                 className="text-[#857f70] hover:text-[#e0d8c3] transition bg-[#182017] p-1 rounded border border-[#2c3826]"

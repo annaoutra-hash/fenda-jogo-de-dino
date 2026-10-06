@@ -116,6 +116,7 @@ export interface ExpeditionReport {
 }
 
 export interface GameState {
+  campName: string;
   camp: {
     sucata: number;
     comida: number;
@@ -140,6 +141,8 @@ export interface GameState {
   expeditionCount: number;
   introSeen: boolean;
   gameLostMeteor: boolean;
+  gameLostPop: boolean;
+  population: number;
   activeExpedition: ExpeditionState | null;
   expeditionSetup: {
     configuring: boolean;
