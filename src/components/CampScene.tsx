@@ -109,22 +109,48 @@ export function CampScene({ buildings, survivors, stash }: CampSceneProps) {
       {stash.some(s => s.id === 'pet_raptor') && (
         <g>
           {/* Filhote de Raptor enrolado dormindo */}
-          <ellipse cx="315" cy="185" rx="8" ry="5" fill="#4a8270" />
-          <circle cx="310" cy="184" r="4" fill="#3d6b5b" />
-          <path d="M 320,185 Q 325,182 328,187" fill="none" stroke="#4a8270" strokeWidth="2" strokeLinecap="round" />
-          <text x="312" y="175" fill="#857f70" fontSize="8" className="smoke">Z</text>
+          <ellipse cx="315" cy="184" rx="10" ry="5" fill="#3d4d34" />
+          <ellipse cx="314" cy="182" rx="9" ry="4" fill="#4a8270" />
+          <circle cx="308" cy="179" r="4.5" fill="#2c3826" />
+          {/* Cauda envolta */}
+          <path d="M 322,184 Q 330,184 332,179 Q 330,181 322,182" fill="#4a8270" />
+          {/* Olho fechado (risquinho) */}
+          <path d="M 306,179 Q 308,180 309,178" fill="none" stroke="#e0d8c3" strokeWidth="0.8" strokeLinecap="round" />
+          <text x="312" y="170" fill="#857f70" fontSize="8" className="smoke">z</text>
         </g>
       )}
       
       {stash.some(s => s.id === 'mount_trico') && (
         <g>
-          {/* Triceratops dormindo */}
-          <ellipse cx="100" cy="180" rx="18" ry="12" fill="#8fd16a" />
-          <ellipse cx="85" cy="182" rx="8" ry="10" fill="#75b054" />
-          {/* Chifres e escudo */}
-          <path d="M 85,172 L 80,165 M 88,172 L 93,165 M 80,180 L 73,178" fill="none" stroke="#e0d8c3" strokeWidth="1.5" />
-          <path d="M 80,172 Q 85,165 90,172" fill="none" stroke="#75b054" strokeWidth="2" />
-          <text x="95" y="165" fill="#857f70" fontSize="10" className="smoke">Z</text>
+          {/* Triceratops dormindo (Design Melhorado) */}
+          {/* Corpo Base */}
+          <ellipse cx="110" cy="178" rx="16" ry="10" fill="#3d4d34" />
+          <ellipse cx="108" cy="175" rx="15" ry="9" fill="#4a8270" />
+          
+          {/* Patas recolhidas */}
+          <ellipse cx="100" cy="183" rx="5" ry="3" fill="#2c3826" />
+          <ellipse cx="118" cy="183" rx="5" ry="3" fill="#2c3826" />
+          
+          {/* Escudo/Coroa (Frill) */}
+          <ellipse cx="88" cy="165" rx="10" ry="14" transform="rotate(25, 88, 165)" fill="#2c3826" stroke="#8fd16a" strokeWidth="1" />
+          
+          {/* Cabeça/Focinho */}
+          <polygon points="85,160 65,180 85,185" fill="#4a8270" />
+          
+          {/* Bico */}
+          <polygon points="65,180 60,185 70,185" fill="#e57a3b" />
+          
+          {/* Chifre do Nariz */}
+          <polygon points="68,177 65,170 70,175" fill="#e0d8c3" />
+          
+          {/* Chifres da Cabeça (com profundidade) */}
+          <path d="M 83,161 Q 70,150 60,152 Q 72,158 85,165" fill="#c5bfae" />
+          <path d="M 80,165 Q 65,155 55,160 Q 70,165 80,170" fill="#e0d8c3" />
+          
+          {/* Olho fechado sereno */}
+          <path d="M 73,173 Q 76,175 78,172" fill="none" stroke="#121612" strokeWidth="1.2" strokeLinecap="round" />
+          
+          <text x="110" y="155" fill="#857f70" fontSize="10" className="smoke">Z</text>
         </g>
       )}
 
