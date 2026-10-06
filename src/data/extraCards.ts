@@ -557,10 +557,10 @@ export const EXTRA_CARDS: CardDef[] = [
         successMsg: 'Ele embala as peças num pano sujo e sorri.',
       },
       {
-        text: 'Trocar 2 rações por remédio',
+        text: 'Trocar um item cego com ele',
         isGuaranteed: true,
-        successEffect: { food: -2, remedio: 2 },
-        successMsg: '"Antibiótico de verdade. Validade? Detalhe."',
+        successEffect: { tradeItemRandom: true },
+        successMsg: 'Vocês trocam itens de olhos fechados. Sorte ou azar?',
       },
       {
         text: 'Ouvir as histórias dele',

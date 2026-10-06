@@ -449,6 +449,18 @@ export default function App() {
       exp.loot.items.push({ id: effect.item, usesRemaining: ITEM_CATALOG[effect.item].uses });
       logs.push(`+ ${ITEM_CATALOG[effect.item].name}`);
     }
+    if (effect.tradeItemRandom) {
+      if (exp.pack.length > 0) {
+        const loseIdx = Math.floor(Math.random() * exp.pack.length);
+        const lostItem = exp.pack.splice(loseIdx, 1)[0];
+        const allItems = Object.keys(ITEM_CATALOG);
+        const gainId = allItems[Math.floor(Math.random() * allItems.length)];
+        exp.pack.push({ id: gainId, usesRemaining: ITEM_CATALOG[gainId].uses });
+        logs.push(`Mercador pegou ${ITEM_CATALOG[lostItem.id].name} e te deu ${ITEM_CATALOG[gainId].name}`);
+      } else {
+        logs.push(`O Mercador riu da sua mochila vazia. Nada feito.`);
+      }
+    }
     if (effect.survivorBonus) {
       gameState.pool.push(generateRandomSurvivor());
       logs.push('+1 Sobrevivente no Acampamento');
@@ -605,6 +617,9 @@ export default function App() {
     if (!gameState.gameWon) {
       if (exp.food > 0) {
         exp.food -= 1;
+      } else if (exp.loot.comida > 0) {
+        exp.loot.comida -= 1;
+        result.log.push('Comeu suprimento roubado: -1 Comida Encontrada');
       } else {
         exp.hp -= 8;
         result.log.push('Inanição: -8 Vida');

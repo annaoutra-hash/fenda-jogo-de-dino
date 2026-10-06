@@ -58,6 +58,7 @@ export interface Effect {
   remedio?: number;
   flag?: string;
   item?: string;
+  tradeItemRandom?: boolean;
   nextCard?: string;
   survivorBonus?: number;
   logEntry?: { title: string; text: string };
