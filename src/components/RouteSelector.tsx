@@ -17,6 +17,7 @@ interface RouteSelectorProps {
   routes: RouteOption[];
   onSelectRoute: (selected: RouteOption) => void;
   onRetreat: () => void;
+  lastDeadBiome?: string;
 }
 
 const BIOME_CONFIG: Record<Biome, { icon: React.ReactNode; border: string; accent: string }> = {
@@ -53,6 +54,7 @@ export function RouteSelector({
   routes,
   onSelectRoute,
   onRetreat,
+  lastDeadBiome,
 }: RouteSelectorProps) {
   return (
     <div className="w-full flex flex-col items-center select-none py-2 animate-in fade-in zoom-in-95 duration-200">
@@ -84,6 +86,9 @@ export function RouteSelector({
                   <div>
                     <h4 className="text-sm font-bold text-[#e0d8c3]">{route.title}</h4>
                     <span className="text-[11px] font-mono text-[#857f70]">Bioma: {route.biome.toUpperCase()}</span>
+                    {lastDeadBiome === route.biome && (
+                      <span className="block mt-1 text-[10px] text-[#ffb0b0] font-mono">🎒 Mochila de Baixa</span>
+                    )}
                   </div>
                 </div>
 

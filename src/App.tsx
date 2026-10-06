@@ -224,26 +224,7 @@ export default function App() {
     const pack = gameState.stash.filter(s => s.selected);
     const remainingStash = gameState.stash.filter(s => !s.selected);
 
-    let firstCard = drawCard(undefined, null, []);
-    const lastDead = gameState.deadLeaders.length > 0 ? gameState.deadLeaders[gameState.deadLeaders.length - 1] : null;
-    
-    if (lastDead && !lastDead.recovered && lastDead.lostPack && lastDead.lostPack.length > 0) {
-      firstCard = {
-        id: 'corpo_batedor',
-        title: `Restos de ${lastDead.name}`,
-        desc: `No início da trilha, você encontra a mochila ensanguentada que pertencia a ${lastDead.name}. Os itens ainda estão lá.`,
-        biome: 'selva',
-        silhouette: 'acampamento',
-        options: [
-          {
-            text: 'Saquear a mochila',
-            isGuaranteed: true,
-            successEffect: { flag: 'recover_pack' },
-            successMsg: 'Os equipamentos do seu antecessor agora pertencem a você.',
-          }
-        ]
-      };
-    }
+    const firstCard = drawCard('selva', null, []);
 
     setGameState(prev => ({
       ...prev,
@@ -274,6 +255,68 @@ export default function App() {
     if (queuedId) {
       const found = ALL_CARDS.find(c => c.id === queuedId);
       if (found) return found;
+    }
+
+    // Injetar Mochila Perdida Dinâmica
+    const targetBiome = preferredBiome || 'selva';
+    const lastDead = gameState.deadLeaders.length > 0 ? gameState.deadLeaders[gameState.deadLeaders.length - 1] : null;
+    if (lastDead && !lastDead.recovered && lastDead.lostPack && lastDead.lostPack.length > 0 && lastDead.biome === targetBiome && !seenIds.includes('corpo_batedor')) {
+      // Filtrar apenas itens permanentes (sem usos limitados)
+      const permItems = lastDead.lostPack.filter(p => p.usesRemaining === null);
+      
+      if (permItems.length > 0) {
+        if (lastDead.cause === 'starvation') {
+          return {
+            id: 'corpo_batedor',
+            title: `Os Restos de ${lastDead.name}`,
+            desc: `Você encontra o corpo desnutrido do seu antecessor. A mochila está jogada no chão, contendo as ferramentas duráveis dele.`,
+            biome: targetBiome,
+            silhouette: 'acampamento',
+            options: [
+              {
+                text: 'Recuperar o equipamento (Cansaço extremo)',
+                isGuaranteed: true,
+                successEffect: { flag: 'recover_pack', hp: -10 },
+                successMsg: 'O esforço e o peso extra exaurem você, mas as ferramentas valem a pena.',
+              },
+              {
+                text: 'Apenas seguir em frente',
+                isGuaranteed: true,
+                successEffect: { flag: 'ignore_pack' },
+                successMsg: 'Você deixa a mochila para a selva.',
+              }
+            ]
+          };
+        } else {
+          return {
+            id: 'corpo_batedor',
+            title: `A Morte de ${lastDead.name}`,
+            desc: `Você encontra a mochila do seu antecessor, manchada de sangue. Mas o predador que o matou ainda está farejando os arredores.`,
+            biome: targetBiome,
+            silhouette: 'acampamento',
+            options: [
+              {
+                text: 'Esperar a fera se afastar e esgueirar-se',
+                attr: 'furtivo',
+                baseChance: 45,
+                successEffect: { flag: 'recover_pack' },
+                successMsg: 'Você pega a mochila sem fazer barulho.',
+                failEffect: { hp: -25, flag: 'ignore_pack' },
+                failMsg: 'Você é notado e forçado a fugir, deixando os itens para trás.',
+              },
+              {
+                text: 'Enfrentar a fera pelo equipamento',
+                attr: 'combate',
+                baseChance: 40,
+                successEffect: { flag: 'recover_pack' },
+                successMsg: 'Você espanta a criatura e recupera o que sobrou.',
+                failEffect: { hp: -30, flag: 'ignore_pack' },
+                failMsg: 'A fera te ataca ferozmente. Você recua de mãos vazias.',
+              }
+            ]
+          };
+        }
+      }
     }
 
     // 1. Filtrar cartas disponíveis
@@ -572,9 +615,17 @@ export default function App() {
       const lastDead = gameState.deadLeaders[gameState.deadLeaders.length - 1];
       if (lastDead && !lastDead.recovered) {
         lastDead.recovered = true;
-        exp.pack.push(...lastDead.lostPack);
+        // Só recupera os permanentes
+        const permItems = lastDead.lostPack.filter(p => p.usesRemaining === null);
+        exp.pack.push(...permItems);
       }
       delete gameState.flags['recover_pack'];
+    }
+
+    if (gameState.flags['ignore_pack']) {
+      const lastDead = gameState.deadLeaders[gameState.deadLeaders.length - 1];
+      if (lastDead) lastDead.recovered = true;
+      delete gameState.flags['ignore_pack'];
     }
 
     setGameState(prev => prev.activeExpedition ? ({
@@ -865,20 +916,37 @@ export default function App() {
       log: [...finalLog, ...incubatorLogs]
     };
 
-    setGameState(prev => ({
-      ...prev,
-      camp: {
-        sucata: prev.camp.sucata + exp.loot.sucata,
-        comida: prev.camp.comida + exp.loot.comida + exp.food,
-        remedio: prev.camp.remedio + exp.loot.remedio
-      },
-      stash: newStash,
-      incubatorQueue: newQueue,
-      activeExpedition: null,
-      report,
-      expeditionCount: (prev.expeditionCount || 0) + 1,
-      gameLostMeteor: (prev.expeditionCount || 0) + 1 > 35
-    }));
+    setGameState(prev => {
+      let nextComida = prev.camp.comida + exp.loot.comida + exp.food;
+      let nextPop = prev.population || 12;
+      const maintenance = 3; // Custo de manutenção da colônia
+
+      if (nextComida >= maintenance) {
+        nextComida -= maintenance;
+        report.log.push(`A colônia consumiu ${maintenance} rações.`);
+      } else {
+        nextPop -= 1;
+        report.log.push(`Fome na colônia! O acampamento não tinha ${maintenance} rações. 1 pessoa morreu de inanição.`);
+        nextComida = 0;
+      }
+
+      return {
+        ...prev,
+        camp: {
+          sucata: prev.camp.sucata + exp.loot.sucata,
+          comida: nextComida,
+          remedio: prev.camp.remedio + exp.loot.remedio
+        },
+        population: nextPop,
+        gameLostPop: nextPop <= 0,
+        stash: newStash,
+        incubatorQueue: newQueue,
+        activeExpedition: null,
+        report,
+        expeditionCount: (prev.expeditionCount || 0) + 1,
+        gameLostMeteor: (prev.expeditionCount || 0) + 1 > 35
+      };
+    });
   };
 
   const handleDie = () => {
@@ -887,11 +955,19 @@ export default function App() {
     const exp = gameState.activeExpedition;
 
     const lostPack = [...gameState.activeExpedition.pack];
+    
+    // Identificar causa e bioma
+    const isStarvation = exp.lastResult?.log.some(l => l.includes('Inanição'));
+    const cause = isStarvation ? 'starvation' : 'combat';
+    const biome = exp.currentCard?.biome || 'selva';
+
     const deadRecord = {
       name: gameState.leader.name,
       origin: gameState.leader.origin,
       lostPack,
-      recovered: false
+      recovered: false,
+      biome,
+      cause
     };
 
     const hortaBonus = gameState.buildings.horta > 0 ? 3 : 0;
@@ -923,12 +999,24 @@ export default function App() {
     };
 
     setGameState(prev => {
-      const nextPop = (prev.population || 12) - 1;
+      let nextComida = prev.camp.comida + hortaBonus;
+      let nextPop = (prev.population || 12) - 1; // Morte do líder custa 1 pop
+      const maintenance = 3;
+
+      if (nextComida >= maintenance) {
+        nextComida -= maintenance;
+        report.log.push(`A colônia consumiu ${maintenance} rações.`);
+      } else {
+        nextPop -= 1; // Penalidade extra por não alimentar a colônia
+        report.log.push(`Fome na colônia! Sem ${maintenance} rações, 1 pessoa morreu de inanição no acampamento.`);
+        nextComida = 0;
+      }
+
       return {
         ...prev,
         camp: {
           ...prev.camp,
-          comida: prev.camp.comida + hortaBonus
+          comida: nextComida
         },
         stash: newStash,
         incubatorQueue: newQueue,
@@ -1392,7 +1480,7 @@ export default function App() {
                   className="w-full my-2"
                 >
                   <RouteSelector
-                    currentCardIndex={exp.cardIndex}
+                    lastDeadBiome={gameState.deadLeaders.length > 0 && !gameState.deadLeaders[gameState.deadLeaders.length - 1].recovered ? gameState.deadLeaders[gameState.deadLeaders.length - 1].biome : undefined} currentCardIndex={exp.cardIndex}
                     totalCards={exp.totalCards}
                     routes={exp.pendingRoutes}
                     onSelectRoute={handleSelectRoute}
@@ -1585,8 +1673,8 @@ export default function App() {
           <span className="flex items-center gap-1 text-[#4a8270]">
             <Cog size={15} /> {gameState.camp.sucata} Sucata
           </span>
-          <span className="flex items-center gap-1 text-[#e57a3b]">
-            <Drumstick size={15} /> {gameState.camp.comida} Ração
+          <span className="flex items-center gap-1 text-[#e57a3b]" title="Custo de Manutenção: -3 ao retornar">
+            <Drumstick size={15} /> {gameState.camp.comida} Ração <span className="text-[9px] opacity-70 ml-0.5">(-3)</span>
           </span>
           <span className="flex items-center gap-1 text-[#8fd16a]">
             <Activity size={15} /> {gameState.camp.remedio} Remédio
@@ -1763,6 +1851,11 @@ export default function App() {
 
         {/* Botão de Partida e Escolha de Rota */}
         <div className="mt-5 space-y-2">
+          {gameState.deadLeaders.length > 0 && !gameState.deadLeaders[gameState.deadLeaders.length - 1].recovered && (
+            <div className="bg-[#2a1b1b] border border-[#5e2b2b] rounded-lg p-2 text-center text-xs text-[#ffb0b0] font-mono mb-2">
+              ⚠️ A mochila de {gameState.deadLeaders[gameState.deadLeaders.length - 1].name} foi perdida no bioma {gameState.deadLeaders[gameState.deadLeaders.length - 1].biome?.toUpperCase()}.
+            </div>
+          )}
           <button
             onClick={handleOpenSetup}
             className="w-full py-3.5 bg-[#e57a3b] text-[#121612] font-bold rounded-xl text-sm hover:brightness-110 flex justify-center items-center gap-2 shadow-lg"

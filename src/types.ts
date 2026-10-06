@@ -100,6 +100,8 @@ export interface DeadLeaderRecord {
   origin: string;
   lostPack: ItemInstance[];
   recovered?: boolean;
+  biome?: Biome;
+  cause?: string;
 }
 
 export interface ExpeditionReport {
