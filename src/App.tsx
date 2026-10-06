@@ -38,6 +38,8 @@ import { RouteSelector } from './components/RouteSelector';
 import type { RouteOption } from './components/RouteSelector';
 import { ItemIcon } from './components/ItemIcon';
 import { HelpModal } from './components/HelpModal';
+import { FishingMinigame } from './components/minigames/FishingMinigame';
+import { DismantleMinigame } from './components/minigames/DismantleMinigame';
 import { sfx } from './utils/audio';
 
 const STORAGE_KEY = 'fenda_v2_save';
@@ -410,6 +412,23 @@ export default function App() {
       return;
     }
 
+    if (option.triggerMinigame) {
+      setGameState(prev => prev.activeExpedition ? ({
+        ...prev,
+        activeExpedition: {
+          ...prev.activeExpedition,
+          activeMinigame: {
+            type: option.triggerMinigame!,
+            successEffect: option.successEffect,
+            failEffect: option.failEffect,
+            successMsg: option.successMsg,
+            failMsg: option.failMsg || 'Falha no minigame.',
+          }
+        }
+      }) : prev);
+      return;
+    }
+
     const logs: string[] = [];
 
     // 1. Garantido (Item ou Ação)
@@ -614,6 +633,26 @@ export default function App() {
     }, 50);
   };
 
+  const handleMinigameEnd = (won: boolean) => {
+    if (!gameState.activeExpedition || !gameState.activeExpedition.activeMinigame) return;
+    const exp = gameState.activeExpedition;
+    const mg = exp.activeMinigame;
+    
+    const logs: string[] = [];
+    const effect = won ? mg?.successEffect : mg?.failEffect;
+    applyEffect(effect, logs);
+    
+    if (won) sfx.success(true);
+    else sfx.fail(true);
+
+    finishTurn({
+      type: won ? 'success' : 'fail',
+      title: won ? 'Vitória no Minigame!' : 'Falha no Minigame',
+      message: won ? (mg?.successMsg || 'Sucesso.') : (mg?.failMsg || 'Falha.'),
+      log: logs
+    });
+  };
+
   // Gerador de Bifurcações no Terreno
   const generateRouteOptions = (): RouteOption[] => {
     const routePool: RouteOption[] = [
@@ -688,6 +727,7 @@ export default function App() {
         cardIndex: nextIndex,
         currentCard: nextCard,
         activeEnemy: nextCard.enemy ? { hp: nextCard.enemy.maxHp, maxHp: nextCard.enemy.maxHp, def: nextCard.enemy } : undefined,
+        activeMinigame: undefined,
         seenCardIds: updatedSeen,
         nextQueuedCard: null,
         lastResult: null,
@@ -1141,6 +1181,21 @@ export default function App() {
                           Tentar Fugir ({exp.activeEnemy.def.fleeChance + 15}% chance base)
                         </button>
                       </div>
+                    </div>
+                  ) : exp.activeMinigame ? (
+                    <div className="my-2">
+                      {exp.activeMinigame.type === 'fishing' && (
+                        <FishingMinigame 
+                          onWin={() => handleMinigameEnd(true)} 
+                          onLose={() => handleMinigameEnd(false)} 
+                        />
+                      )}
+                      {exp.activeMinigame.type === 'dismantle' && (
+                        <DismantleMinigame 
+                          onWin={() => handleMinigameEnd(true)} 
+                          onLose={() => handleMinigameEnd(false)} 
+                        />
+                      )}
                     </div>
                   ) : (
                     <SwipeableCard

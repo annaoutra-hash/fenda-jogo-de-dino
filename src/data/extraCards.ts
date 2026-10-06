@@ -154,9 +154,8 @@ export const EXTRA_CARDS: CardDef[] = [
         failMsg: 'O piso apodrecido cede e você cai na água lamacenta.',
       },
       {
-        text: 'Desmontar as bombas por peças',
-        attr: 'arrombar',
-        baseChance: 45,
+        text: 'Desmontar as bombas por peças (Cuidado)',
+        triggerMinigame: 'dismantle',
         successEffect: { sucata: 5 },
         successMsg: 'Mangueiras, válvulas e chapas metálicas. A bancada vai adorar.',
         failEffect: { hp: -15 },
@@ -293,9 +292,8 @@ export const EXTRA_CARDS: CardDef[] = [
     weight: 2,
     options: [
       {
-        text: 'Pescar com a lança',
-        attr: 'combate',
-        baseChance: 60,
+        text: 'Tentar pescar na margem',
+        triggerMinigame: 'fishing',
         successEffect: { comida: 3 },
         successMsg: 'Três peixes gordos no espeto.',
         failEffect: { food: -1 },
@@ -324,9 +322,8 @@ export const EXTRA_CARDS: CardDef[] = [
     once: true,
     options: [
       {
-        text: 'Desmontar o motor de popa',
-        attr: 'arrombar',
-        baseChance: 50,
+        text: 'Desmontar o motor de popa (Risco de Choque)',
+        triggerMinigame: 'dismantle',
         successEffect: { sucata: 6 },
         successMsg: 'Pistões, velas e fios. Um tesouro mecânico.',
         failEffect: { hp: -10, sucata: 2 },

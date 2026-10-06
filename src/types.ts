@@ -34,6 +34,8 @@ export interface ItemInstance {
   selected?: boolean;
 }
 
+export type MinigameType = 'fishing' | 'dismantle';
+
 export interface CardOption {
   text: string;
   reqTag?: string; // Garantido com item
@@ -45,6 +47,7 @@ export interface CardOption {
   successMsg: string;
   failMsg?: string;
   triggerCombat?: EnemyDef;
+  triggerMinigame?: MinigameType;
 }
 
 export interface Effect {
@@ -159,6 +162,13 @@ export interface ExpeditionState {
   };
   currentCard: CardDef;
   activeEnemy?: EnemyState;
+  activeMinigame?: {
+    type: MinigameType;
+    successEffect?: Effect;
+    failEffect?: Effect;
+    successMsg: string;
+    failMsg: string;
+  };
   lastCardId?: string;
   seenCardIds: string[];
   nextQueuedCard?: string | null;
