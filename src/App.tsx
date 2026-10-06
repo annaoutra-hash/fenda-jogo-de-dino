@@ -1310,7 +1310,7 @@ export default function App() {
 
         {/* Cena viva do acampamento */}
         <div className="mt-3">
-          <CampScene buildings={gameState.buildings} survivors={gameState.pool.length} />
+          <CampScene buildings={gameState.buildings} survivors={gameState.pool.length} stash={gameState.stash} />
         </div>
 
         {/* Recursos Centrais */}
@@ -1413,14 +1413,15 @@ export default function App() {
             </h2>
             <div className="bg-[#182017] border border-[#24301f] rounded-xl p-2 space-y-1.5 text-xs">
               {gameState.stash.map((item, idx) => {
-                if (!ITEM_CATALOG[item.id].tags?.includes('ovo')) return null;
+                const def = ITEM_CATALOG[item.id];
+                if (!def?.tags?.includes('ovo')) return null;
                 const mappedPetId = item.id === 'ovo_trico' ? 'mount_trico' : 'pet_raptor';
                 
                 return (
                   <div key={idx} className="flex justify-between items-center py-1 border-b border-[#1f281b] last:border-0">
                     <span className="flex items-center gap-1.5">
                       <ItemIcon id={item.id} size={15} />
-                      <span>{ITEM_CATALOG[item.id].name}</span>
+                      <span>{def.name}</span>
                     </span>
                     <button
                       onClick={() => handleHatch(idx, mappedPetId)}
@@ -1431,7 +1432,7 @@ export default function App() {
                   </div>
                 );
               })}
-              {gameState.stash.filter(i => ITEM_CATALOG[i.id].tags?.includes('ovo')).length === 0 && (
+              {gameState.stash.filter(i => ITEM_CATALOG[i.id]?.tags?.includes('ovo')).length === 0 && (
                 <div className="text-[11px] text-[#857f70] text-center p-2">Nenhum ovo para chocar.</div>
               )}
             </div>

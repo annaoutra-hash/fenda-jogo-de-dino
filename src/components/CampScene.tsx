@@ -1,13 +1,14 @@
-import type { GameState } from '../types';
+import type { GameState, ItemInstance } from '../types';
 
 interface CampSceneProps {
   buildings: GameState['buildings'];
   survivors: number;
+  stash: ItemInstance[];
 }
 
 // Cena viva do acampamento: estática no geral, com fogo tremulando,
 // fumaça subindo e estruturas que aparecem conforme são construídas.
-export function CampScene({ buildings, survivors }: CampSceneProps) {
+export function CampScene({ buildings, survivors, stash }: CampSceneProps) {
   const people = Math.min(survivors, 4);
   const seats = [
     { x: 150, y: 172 },
@@ -94,13 +95,36 @@ export function CampScene({ buildings, survivors }: CampSceneProps) {
         </g>
       )}
 
-      {/* Incubadora (Poço termal com ovos) */}
+      {/* Incubadora (Poço termal) */}
       {buildings.incubadora > 0 && (
         <g>
           <ellipse cx="280" cy="180" rx="20" ry="8" fill="#1c1212" stroke="#e57a3b" strokeWidth="1" />
-          <ellipse cx="275" cy="178" rx="4" ry="5" fill="#4a8270" />
-          <ellipse cx="284" cy="179" rx="3" ry="4" fill="#8fd16a" />
+          {stash.some(s => s.id === 'ovo_raptor') && <ellipse cx="275" cy="178" rx="4" ry="5" fill="#4a8270" />}
+          {stash.some(s => s.id === 'ovo_trico') && <ellipse cx="286" cy="179" rx="5" ry="6" fill="#8fd16a" />}
           <path d="M 270,180 Q 280,170 290,180" fill="none" stroke="#e57a3b" strokeWidth="1.5" className="wave" opacity="0.4" />
+        </g>
+      )}
+
+      {/* Mascotes (Dormindo no acampamento) */}
+      {stash.some(s => s.id === 'pet_raptor') && (
+        <g>
+          {/* Filhote de Raptor enrolado dormindo */}
+          <ellipse cx="315" cy="185" rx="8" ry="5" fill="#4a8270" />
+          <circle cx="310" cy="184" r="4" fill="#3d6b5b" />
+          <path d="M 320,185 Q 325,182 328,187" fill="none" stroke="#4a8270" strokeWidth="2" strokeLinecap="round" />
+          <text x="312" y="175" fill="#857f70" fontSize="8" className="smoke">Z</text>
+        </g>
+      )}
+      
+      {stash.some(s => s.id === 'mount_trico') && (
+        <g>
+          {/* Triceratops dormindo */}
+          <ellipse cx="100" cy="180" rx="18" ry="12" fill="#8fd16a" />
+          <ellipse cx="85" cy="182" rx="8" ry="10" fill="#75b054" />
+          {/* Chifres e escudo */}
+          <path d="M 85,172 L 80,165 M 88,172 L 93,165 M 80,180 L 73,178" fill="none" stroke="#e0d8c3" strokeWidth="1.5" />
+          <path d="M 80,172 Q 85,165 90,172" fill="none" stroke="#75b054" strokeWidth="2" />
+          <text x="95" y="165" fill="#857f70" fontSize="10" className="smoke">Z</text>
         </g>
       )}
 
