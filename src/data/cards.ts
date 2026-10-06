@@ -17,7 +17,7 @@ export const ALL_CARDS: CardDef[] = [
       {
         text: 'Arremessar uma Ração aberta (-1 comida)',
         isGuaranteed: true,
-        successEffect: { food: -1 },
+        successEffect: { comida: -1 },
         successMsg: 'O bando disputa a carne freneticamente. Você avança sem barulho pelo flanco.',
       },
       {
@@ -133,13 +133,13 @@ export const ALL_CARDS: CardDef[] = [
         attr: 'agil',
         baseChance: 45,
         successMsg: 'Com braçadas vigorosas você atinge a outra margem ensopado, mas inteiro.',
-        failEffect: { hp: -20, food: -1 },
+        failEffect: { hp: -20, comida: -1 },
         failMsg: 'A correnteza te arremessa contra rochas submersas e parte de suas rações é levada pela água.',
       },
       {
         text: 'Contornar a pé pela nascente (-2 comida)',
         isGuaranteed: true,
-        successEffect: { food: -2 },
+        successEffect: { comida: -2 },
         successMsg: 'Horas exaustivas de caminhada contornando o vale fluvial. Seguro, porém custoso.',
       },
     ],
@@ -157,7 +157,7 @@ export const ALL_CARDS: CardDef[] = [
         text: 'Extrair mantimentos com pressa',
         attr: 'sobrev',
         baseChance: 55,
-        successEffect: { comida: 3 },
+        successEffect: { comida: 5 },
         successMsg: 'Você corta filés nobres e embala tudo antes que qualquer outro bicho se aproxime.',
         failEffect: { hp: -20 },
         failMsg: 'O predador alfa retorna durante a extração! Você foge às pressas com ferimentos.',
@@ -187,7 +187,7 @@ export const ALL_CARDS: CardDef[] = [
       {
         text: 'Romper a corrente com o Pé-de-Cabra',
         reqTag: 'arrombar',
-        successEffect: { sucata: 5, remedio: 1 },
+        successEffect: { sucata: 5, remedio: 2 },
         successMsg: 'Alavanca certeira! As portas se abrem revelando maquinário industrial e caixas lacradas de antibióticos.',
       },
       {
@@ -269,7 +269,7 @@ export const ALL_CARDS: CardDef[] = [
       {
         text: 'Tratar os ferimentos e escoltar (-1 comida)',
         isGuaranteed: true,
-        successEffect: { food: -1, survivorBonus: 1 },
+        successEffect: { comida: -1, survivorBonus: 1 },
         successMsg: 'Você estabiliza o pulso dele com suas rações. Ele aceita se juntar ao seu acampamento!',
       },
       {
@@ -293,7 +293,7 @@ export const ALL_CARDS: CardDef[] = [
         text: 'Extrair a seiva com luvas para remédio',
         attr: 'sobrev',
         baseChance: 60,
-        successEffect: { remedio: 1 },
+        successEffect: { remedio: 2 },
         successMsg: 'A seiva possui alta concentração cicatrizante. Frasco de remédio obtido!',
         failEffect: { hp: -10 },
         failMsg: 'Toxinas penetram suas luvas improvisadas, provocando queimaduras químicas dolorosas.',
@@ -321,7 +321,7 @@ export const ALL_CARDS: CardDef[] = [
       {
         text: 'Aguardar o temporal em uma gruta (-1 comida)',
         isGuaranteed: true,
-        successEffect: { food: -1 },
+        successEffect: { comida: -1 },
         successMsg: 'Você raciona seu alimento em segurança enquanto a ventania varre as copas das árvores.',
       },
       {

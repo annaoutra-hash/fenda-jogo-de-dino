@@ -26,7 +26,7 @@ export const EXTRA_CARDS: CardDef[] = [
         text: 'Coletar folhas mastigadas e esterco (adubo)',
         attr: 'sobrev',
         baseChance: 50,
-        successEffect: { comida: 2, remedio: 1 },
+        successEffect: { comida: 4, remedio: 2 },
         successMsg: 'Entre os restos você encontra tubérculos comestíveis e um fungo medicinal.',
         failEffect: { hp: -15 },
         failMsg: 'Você pisa num filhote escondido. A mãe não gosta nada disso.',
@@ -50,7 +50,7 @@ export const EXTRA_CARDS: CardDef[] = [
       {
         text: 'Colher frutos com calma',
         isGuaranteed: true,
-        successEffect: { comida: 2 },
+        successEffect: { comida: 4 },
         successMsg: 'Um saco cheio de frutos fibrosos e nutritivos.',
       },
       {
@@ -94,7 +94,7 @@ export const EXTRA_CARDS: CardDef[] = [
       {
         text: 'Revirar as barracas',
         isGuaranteed: true,
-        successEffect: { sucata: 3, remedio: 1 },
+        successEffect: { sucata: 3, remedio: 2 },
         successMsg: 'Ferramentas, uma lanterna sem bateria e um frasco de antibiótico.',
       },
       {
@@ -132,7 +132,7 @@ export const EXTRA_CARDS: CardDef[] = [
       {
         text: 'Pegar o kit de primeiros socorros da parede',
         isGuaranteed: true,
-        successEffect: { remedio: 1 },
+        successEffect: { remedio: 2 },
         successMsg: 'Ainda lacrado. Um achado precioso.',
       },
     ],
@@ -148,7 +148,7 @@ export const EXTRA_CARDS: CardDef[] = [
         text: 'Saquear a loja de conveniência',
         attr: 'agil',
         baseChance: 60,
-        successEffect: { comida: 3 },
+        successEffect: { comida: 5 },
         successMsg: 'Enlatados, salgadinhos e água engarrafada. Banquete!',
         failEffect: { hp: -10 },
         failMsg: 'O piso apodrecido cede e você cai na água lamacenta.',
@@ -258,7 +258,7 @@ export const EXTRA_CARDS: CardDef[] = [
         text: 'Quebrar ovos para comer',
         attr: 'sobrev',
         baseChance: 80,
-        successEffect: { comida: 3 },
+        successEffect: { comida: 5 },
         successMsg: 'Omelete pré-histórico cru. Sustenta bem.',
         failEffect: { hp: -10 },
         failMsg: 'O cheiro atrai carnívoros. Você é forçado a fugir antes de comer.',
@@ -294,10 +294,10 @@ export const EXTRA_CARDS: CardDef[] = [
       {
         text: 'Tentar pescar na margem',
         triggerMinigame: 'fishing',
-        successEffect: { comida: 3 },
+        successEffect: { comida: 5 },
         successMsg: 'Três peixes gordos no espeto.',
-        failEffect: { food: -1 },
-        failMsg: 'Horas perdidas sem pegar nada. Você come uma ração de frustração.',
+        failEffect: { comida: -1 },
+        failMsg: 'Horas perdidas sem pegar nada. Fome e frustração.',
       },
       {
         text: 'Montar uma armadilha de galhos',
@@ -332,7 +332,7 @@ export const EXTRA_CARDS: CardDef[] = [
       {
         text: 'Revistar a cabine',
         isGuaranteed: true,
-        successEffect: { comida: 2, sucata: 1 },
+        successEffect: { comida: 4, sucata: 1 },
         successMsg: 'Um cooler com enlatados e uma caixa de ferramentas.',
       },
     ],
@@ -403,7 +403,7 @@ export const EXTRA_CARDS: CardDef[] = [
         text: 'Explorar o fundo da gruta',
         attr: 'furtivo',
         baseChance: 50,
-        successEffect: { sucata: 3, remedio: 1 },
+        successEffect: { sucata: 3, remedio: 2 },
         successMsg: 'Alguém já viveu aqui. Você acha um esconderijo de suprimentos.',
         failEffect: { hp: -20 },
         failMsg: 'Morcegos gigantes. Muitos morcegos gigantes.',
