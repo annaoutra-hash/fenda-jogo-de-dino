@@ -535,8 +535,16 @@ export default function App() {
 
     setGameState(prev => prev.activeExpedition ? ({
       ...prev,
+      flags: { ...gameState.flags },
+      pool: [...gameState.pool],
+      loreLogs: [...gameState.loreLogs],
+      gameWon: gameState.gameWon,
       activeExpedition: {
         ...prev.activeExpedition,
+        hp: exp.hp,
+        food: exp.food,
+        loot: { ...exp.loot, items: [...exp.loot.items] },
+        nextQueuedCard: exp.nextQueuedCard,
         lastResult: result
       }
     }) : prev);
@@ -615,6 +623,7 @@ export default function App() {
           }
         }
 
+        exp.hp = nextHp;
         setGameState(prev => {
           if (!prev.activeExpedition) return prev;
           return {
@@ -622,6 +631,7 @@ export default function App() {
             activeExpedition: {
               ...prev.activeExpedition,
               hp: nextHp,
+              loot: { ...exp.loot, items: [...exp.loot.items] },
               activeEnemy: { ...prev.activeExpedition.activeEnemy!, hp: nextEnemyHp },
               lastResult: result
             }
