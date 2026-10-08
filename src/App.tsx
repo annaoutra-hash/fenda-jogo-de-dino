@@ -245,6 +245,7 @@ export default function App() {
         food,
         cardIndex: 1,
         totalCards: duration,
+        craterAt: (prev.expeditionCount || 0) >= 25 && Math.random() < 0.25 ? 1 + Math.floor(Math.random() * (duration - 1)) : -1,
         pack,
         loot: { sucata: 0, comida: 0, remedio: 0, items: [] },
         currentCard: firstCard,
@@ -349,15 +350,77 @@ export default function App() {
     if (fendaReady && preferredBiome === 'noite') {
       const fendaCard = ALL_CARDS.find(c => c.id === 'fenda');
       if (fendaCard && !seenIds.includes('fenda')) {
-        return fendaCard;
+        const hasCracha = gameState.stash.some(i => i.id === 'cracha_tempora') || (gameState.activeExpedition?.pack.some(i => i.id === 'cracha_tempora') ?? false);
+        const dynamicFenda = { ...fendaCard };
+        
+        const limit = ((gameState.cristaisTemporais || 0) - 2) * 3;
+        const saved = Math.min(gameState.population || 12, Math.max(0, limit));
+        dynamicFenda.desc = fendaCard.desc + `\n\n[ Capacidade atual da Fenda: Salva o líder + ${saved} de ${gameState.population || 12} colonos ]`;
+        
+        dynamicFenda.options = [
+          {
+            text: hasCracha ? 'Abandonar o crachá e atravessar' : 'Atravessar o portal de volta',
+            isGuaranteed: true,
+            successEffect: { ending: true },
+            successMsg: 'Você se lança na energia esmeralda.'
+          }
+        ];
+        if (hasCracha) {
+          dynamicFenda.options.push({
+            text: 'Atravessar empunhando o Crachá (Desvendar a verdade)',
+            isGuaranteed: true,
+            successEffect: { ending: 'paradoxo' },
+            successMsg: 'As assinaturas quânticas entram em ressonância destrutiva...'
+          });
+        }
+        dynamicFenda.options.push({
+            text: 'Recuar. Preciso de mais cristais para salvar a todos.',
+            isGuaranteed: true,
+            successMsg: 'A fenda ficará aberta. Você volta às sombras da selva.'
+        });
+        
+        return dynamicFenda as CardDef;
       }
     }
 
-    // Pity System: RNG Mais Justo no late game
+    // Pity System e Ajudas Tardias: RNG Mais Justo no late game
     if ((gameState.expeditionCount || 0) >= 25) {
-      const pityCards = available.filter(c => ['metro', 'bunker', 'fenda'].includes(c.id));
+      if (gameState.activeExpedition?.craterAt === seenIds.length && !seenIds.includes('cratera_fresca')) {
+        return {
+          id: 'cratera_fresca',
+          title: 'Cratera Recente',
+          desc: 'Um meteoro anômalo caiu recentemente aqui. A rocha ainda fumega, irradiando uma cor esmeralda familiar. Uma chance desesperada de conseguir cristais de energia.',
+          biome: preferredBiome || 'selva',
+          silhouette: 'caverna',
+          options: [
+            {
+              text: 'Extrair minério no calor extremo',
+              attr: 'sobrev',
+              baseChance: 35,
+              successEffect: { cristaisTemporais: 2 },
+              successMsg: 'Com as mãos queimadas, você arranca duas formações de cristal puro.',
+              failEffect: { hp: -25 },
+              failMsg: 'A instabilidade da rocha causa uma pequena explosão térmica no seu rosto.'
+            },
+            {
+              text: 'Afastar-se e procurar outra rota',
+              isGuaranteed: true,
+              successMsg: 'O calor é insuportável demais para arriscar.'
+            }
+          ]
+        } as CardDef;
+      }
+      const FONTE: Record<string, string> = {
+        fita: 'metro', bunker: 'bunker', caixa_preta: 'aviao',
+        diario_cientista: 'acampamento_abandonado', bateria_nautica: 'barco',
+      };
+      const faltam = Object.entries(FONTE).filter(([f]) => !gameState.flags[f]).map(([, id]) => id);
+      if ((gameState.cristaisTemporais || 0) < 2) faltam.push('cristal');
+      faltam.push('fenda');
+      
+      const pityCards = available.filter(c => faltam.includes(c.id));
       if (pityCards.length > 0 && Math.random() < 0.6) {
-        return pityCards[0];
+        return pityCards[Math.floor(Math.random() * pityCards.length)];
       }
     }
 
@@ -490,6 +553,7 @@ export default function App() {
     }
     if (effect.survivorBonus) {
       gameState.pool.push(generateRandomSurvivor());
+      gameState.population = (gameState.population || 12) + 1;
       logs.push('+1 Sobrevivente no Acampamento');
     }
     if (effect.nextCard) {
@@ -500,8 +564,22 @@ export default function App() {
       logs.push(`Novo registro de lore: ${effect.logEntry.title}`);
     }
     if (effect.ending) {
-      gameState.gameWon = true;
+      gameState.gameWon = effect.ending;
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+    }
+
+    if (effect.flag === 'recover_pack' || effect.flag === 'ignore_pack') {
+      if (gameState.deadLeaders.length > 0) {
+        const lastDead = gameState.deadLeaders[gameState.deadLeaders.length - 1];
+        lastDead.recovered = true;
+        if (effect.flag === 'recover_pack' && lastDead.lostPack) {
+          const perm = lastDead.lostPack.filter(p => p.usesRemaining === null);
+          exp.pack.push(...perm);
+          logs.push(`Recuperou ${perm.length} itens da mochila.`);
+        }
+      }
+      delete gameState.flags['recover_pack'];
+      delete gameState.flags['ignore_pack'];
     }
   };
 
@@ -1302,15 +1380,38 @@ export default function App() {
           </div>
           <h1 className="text-2xl font-bold text-[#e57a3b] mb-2">A FENDA — O RETORNO</h1>
           
-          {gameState.stash.some(i => i.id === 'cracha_tempora') ? (
+          {gameState.gameWon === 'paradoxo' ? (
             <div className="text-sm text-[#c5bfae] mb-4 leading-relaxed">
-              <p>A luz pisca. Você não está na rua. Está no centro de pesquisa do Projeto TÊMPORA, minutos ANTES do acidente.</p>
-              <p className="mt-2 text-[#4a8270] font-bold">Você encontrou o próprio crachá antes de cair. Foi você quem iniciou a Fenda.</p>
+              <p>Você estendeu a mão com o Crachá de Alencar para ativar a passagem, mas as assinaturas ressoaram.</p>
+              <p>A luz pisca. Você não está na rua. Está no centro de pesquisa do Projeto TÊMPORA, instantes ANTES da detonação.</p>
+              <p className="mt-2 text-[#4a8270] font-bold">O crachá é seu. Você é o Dr. Alencar. O sacrifício do projeto não foi para abrir a fenda; foi porque você tentou fugir dela.</p>
             </div>
           ) : (
-            <p className="text-sm text-[#c5bfae] mb-4 leading-relaxed">
-              O portal estabilizou. {gameState.leader?.name} liderou os {gameState.population} sobreviventes restantes do {gameState.campName || 'Acampamento Central'} de volta pela fronteira quântica. As buzinas do trânsito paulistano ecoam enquanto seus pés tocam o asfalto de 2026.
-            </p>
+            <div className="text-sm text-[#c5bfae] mb-4 leading-relaxed">
+              <p className="mb-2">O portal estabilizou, contido pela força de {gameState.cristaisTemporais} cristais temporais.</p>
+              {(() => {
+                const limit = ((gameState.cristaisTemporais || 0) - 2) * 3;
+                const saved = Math.min(gameState.population, Math.max(0, limit));
+                const leftBehind = gameState.population - saved;
+                return (
+                  <>
+                    <p className="text-green-400 font-bold mb-2">
+                      {gameState.leader?.name} cruzou a fenda em segurança trazendo consigo {saved} sobreviventes do {gameState.campName || 'Acampamento Central'}.
+                    </p>
+                    {leftBehind > 0 && (
+                       <p className="text-red-400 mb-2">
+                         Infelizmente a energia não foi suficiente. {leftBehind} membros da colônia ficaram para trás, presos no Cretáceo Superior.
+                       </p>
+                    )}
+                    {saved === gameState.population && saved > 0 && (
+                      <p className="text-blue-400 italic">
+                        Todos os vivos retornaram. A colônia cumpriu seu propósito.
+                      </p>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
           )}
 
           <p className="text-xs text-[#857f70] mb-6">

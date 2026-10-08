@@ -63,7 +63,7 @@ export interface Effect {
   survivorBonus?: number;
   cristaisTemporais?: number;
   logEntry?: { title: string; text: string };
-  ending?: boolean;
+  ending?: boolean | 'paradoxo';
 }
 
 export type Biome = 'selva' | 'noite' | 'ruinas' | 'rio' | 'tempestade';
@@ -155,7 +155,7 @@ export interface GameState {
     food: number;
   } | null;
   report: ExpeditionReport | null;
-  gameWon: boolean;
+  gameWon: boolean | 'paradoxo';
   incubatorQueue: { eggId: string; petId: string; expeditionsLeft: number }[];
 }
 
@@ -165,6 +165,7 @@ export interface ExpeditionState {
   food: number;
   cardIndex: number;
   totalCards: number;
+  craterAt?: number;
   pack: ItemInstance[];
   loot: {
     sucata: number;

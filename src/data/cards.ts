@@ -481,12 +481,7 @@ export const ALL_CARDS: CardDef[] = [
     biome: 'noite',
     silhouette: 'fenda',
     once: true,
-    condition: (state: GameState) =>
-      state.buildings.radio > 0 &&
-      !!state.flags.bunker &&
-      !!state.flags.caixa_preta &&
-      !!state.flags.diario_cientista &&
-      (state.cristaisTemporais || 0) >= 2,
+    onlyTriggered: true,
     options: [
       {
         text: 'Atravessar o portal de volta para o século XXI',
