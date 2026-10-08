@@ -48,7 +48,7 @@ export const ALL_CARDS: CardDef[] = [
     title: 'Raptores na Noite',
     desc: 'Pupilas fendidas refletem a lua. Três velociraptores fecham seu ângulo de fuga em formação de caça.',
     biome: 'noite',
-    silhouette: 'raptor',
+    silhouette: 'raptor_noite',
     options: [
       {
         text: 'Acender o Sinalizador Químico',
@@ -238,7 +238,7 @@ export const ALL_CARDS: CardDef[] = [
     title: 'Mochila do Antigo Batedor',
     desc: 'Entre as raízes de uma sumaúma milenar, jaz a mochila identificada do líder anterior que não retornou da selva.',
     biome: 'selva',
-    silhouette: 'sobrevivente',
+    silhouette: 'corpo_batedor',
     condition: (state: GameState) => state.deadLeaders.some((d) => !d.recovered && d.lostPack.length > 0),
     options: [
       {
@@ -264,7 +264,7 @@ export const ALL_CARDS: CardDef[] = [
     title: 'Sobrevivente Enfraquecido',
     desc: 'Um homem com colete de passageiro de avião comercial, debilitado por febre, encostado em um tronco.',
     biome: 'selva',
-    silhouette: 'sobrevivente',
+    silhouette: 'sobrevivente_encostado',
     options: [
       {
         text: 'Tratar os ferimentos e escoltar (-1 comida)',
@@ -478,7 +478,7 @@ export const ALL_CARDS: CardDef[] = [
     id: 'fenda',
     title: 'A Fenda Quântica Aberta',
     desc: 'O ar chia com eletricidade estática. Com o sinal da Torre de Rádio alimentada, os 2 cristais temporais ressoam e a frequência da caixa preta estabiliza o rasgo verde. Do outro lado, o tráfego de 2026!',
-    biome: 'noite',
+    biome: 'fenda',
     silhouette: 'fenda',
     once: true,
     onlyTriggered: true,

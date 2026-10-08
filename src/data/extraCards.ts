@@ -44,7 +44,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Pomar de Cicadáceas',
     desc: 'Um bosque tranquilo de palmeiras primitivas carregadas de frutos. Nenhum rastro de predador.',
     biome: 'selva',
-    silhouette: 'plantas',
+    silhouette: 'palmeiras',
     weight: 2,
     options: [
       {
@@ -72,7 +72,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Cuspidor de Veneno',
     desc: 'Um Dilofossauro abre o colar de pele e sibila. A baba escorre da mandíbula, ácida.',
     biome: 'selva',
-    silhouette: 'raptor',
+    silhouette: 'cuspidor',
     enemy: {
       name: 'Dilofossauro',
       maxHp: 40,
@@ -86,9 +86,9 @@ export const EXTRA_CARDS: CardDef[] = [
   {
     id: 'acampamento_abandonado',
     title: 'Acampamento Abandonado',
-    desc: 'Barracas rasgadas, uma fogueira fria e uma bandeira de expedição científica. Ninguém por perto há semanas.',
+    desc: 'Barracas rasgadas e uma fogueira fria. Sobre uma mesinha dobrável, um diário de expedição esquecido.',
     biome: 'selva',
-    silhouette: 'tenda',
+    silhouette: 'acampamento',
     once: true,
     options: [
       {
@@ -142,7 +142,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Módulo TÊMPORA',
     desc: 'Um contêiner de aço branco, esmagado contra as rochas. O logotipo do Projeto TÊMPORA está parcialmente derretido. A porta foi trancada pelo lado de fora.',
     biome: 'ruinas',
-    silhouette: 'container',
+    silhouette: 'modulo',
     options: [
       {
         text: 'Arrombar a porta selada',
@@ -173,7 +173,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Posto de Gasolina Engolido',
     desc: 'Um posto inteiro, com bombas e loja de conveniência, meio afundado num pântano.',
     biome: 'ruinas',
-    silhouette: 'container',
+    silhouette: 'posto',
     options: [
       {
         text: 'Saquear a loja de conveniência',
@@ -199,7 +199,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Saqueadores Humanos',
     desc: 'Três sobreviventes armados com lanças bloqueiam o caminho. Nem todo náufrago virou aliado.',
     biome: 'ruinas',
-    silhouette: 'sobrevivente',
+    silhouette: 'saqueadores',
     options: [
       {
         text: 'Pagar pedágio (perde 2 rações)',
@@ -242,7 +242,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Farmácia Soterrada',
     desc: 'Um letreiro verde em cruz pisca fraco, alimentado por um painel solar rachado.',
     biome: 'ruinas',
-    silhouette: 'bunker',
+    silhouette: 'farmacia',
     weight: 1,
     options: [
       {
@@ -273,7 +273,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Ninho Abandonado',
     desc: 'Um monte de palha e lama com ovos enormes. Não há sinal da mãe por perto.',
     biome: 'ruinas',
-    silhouette: 'herbivoro',
+    silhouette: 'ninho',
     weight: 2,
     options: [
       {
@@ -319,7 +319,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Remanso de Peixes',
     desc: 'Uma curva calma do rio, cheia de peixes primitivos com escamas blindadas.',
     biome: 'rio',
-    silhouette: 'rio_sombra',
+    silhouette: 'peixes',
     weight: 2,
     options: [
       {
@@ -349,7 +349,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Lancha Encalhada',
     desc: 'Uma lancha de passeio presa entre pedras, com o motor de popa e uma bateria de ciclo profundo preservada.',
     biome: 'rio',
-    silhouette: 'container',
+    silhouette: 'lancha',
     once: true,
     options: [
       {
@@ -399,7 +399,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Anquilossauro Assustado',
     desc: 'Os trovões deixaram um tanque blindado vivo em pânico. A cauda em clava destrói tudo ao redor.',
     biome: 'tempestade',
-    silhouette: 'herbivoro',
+    silhouette: 'anquilossauro_tempestade',
     options: [
       {
         text: 'Abrigar-se atrás das rochas',
@@ -421,14 +421,20 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Gruta Seca',
     desc: 'Uma caverna protegida da chuva, com pinturas rupestres e restos de uma fogueira antiga.',
     biome: 'tempestade',
-    silhouette: 'caverna',
+    silhouette: 'gruta_tempestade',
     weight: 2,
     options: [
       {
-        text: 'Acampar e se recuperar',
+        text: 'Acampar no escuro',
         isGuaranteed: true,
-        successEffect: { hp: 25, food: -1 },
-        successMsg: 'Uma noite inteira de sono. Você acorda renovado.',
+        successEffect: { hp: 15, comida: -1 },
+        successMsg: 'A noite é fria sem fogo, mas você consegue dormir um pouco.',
+      },
+      {
+        text: 'Acender fogueira e descansar',
+        reqTag: 'fogo',
+        successEffect: { hp: 35, comida: -1 },
+        successMsg: 'O calor seca as roupas e o sono vem pesado e reparador.',
       },
       {
         text: 'Explorar o fundo da gruta',
@@ -448,7 +454,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Olhos no Escuro',
     desc: 'Dezenas de pares de olhos verdes cercam seu acampamento noturno. Troodontes: pequenos e muito espertos.',
     biome: 'noite',
-    silhouette: 'compy',
+    silhouette: 'olhos_troodonte',
     options: [
       {
         text: 'Acender o sinalizador',
@@ -479,25 +485,45 @@ export const EXTRA_CARDS: CardDef[] = [
   {
     id: 'ninho_raptor',
     title: 'Ninho de Raptor',
-    desc: 'Escondido na escuridão, um ninho com cascas rachadas e um ovo intacto. Ouço passos leves.',
+    desc: 'Escondido na escuridão, um ninho com cascas rachadas e um ovo intacto. Ouço passos leves da mãe por perto.',
     biome: 'noite',
-    silhouette: 'raptor',
+    silhouette: 'ninho_raptor_noite',
     weight: 2,
     options: [
       {
-        text: 'Agarrar o ovo e correr',
+        text: 'Lutar contra a mãe raptor pelo ovo',
+        triggerCombat: {
+          name: 'Mãe Raptor Furiosa',
+          maxHp: 40,
+          damage: 12,
+          combatChance: 60,
+          fleeChance: 40,
+          loot: { item: 'ovo_raptor', sucata: 1 }
+        },
+        successMsg: 'Você entra no campo de visão dela com a arma em punho. Vai ser matar ou morrer.',
+      },
+      {
+        text: 'Agarrar o ovo e correr silenciosamente',
         attr: 'agil',
         baseChance: 55,
         successEffect: { item: 'ovo_raptor' },
-        successMsg: 'Você pega o ovo morno e some na névoa antes que a mãe ataque.',
-        failEffect: { hp: -25 },
-        failMsg: 'Garras afiadas cortam suas costas na fuga! Você escapa ferido e sem o ovo.',
+        successMsg: 'Você pega o ovo morno e some na névoa antes que a mãe perceba.',
+        failEffect: { hp: -30 },
+        failMsg: 'Garras afiadas cortam suas costas na fuga! Você escapa muito ferido e sem o ovo.',
       },
       {
-        text: 'Afastar a mãe com fogo',
-        reqTag: 'fogo',
-        successEffect: { item: 'ovo_raptor' },
-        successMsg: 'O sinalizador cega e espanta o animal tempo suficiente para pegar o ovo e sair intacto.',
+        text: 'Furar a casca e beber cru aqui mesmo',
+        attr: 'furtivo',
+        baseChance: 70,
+        successEffect: { comida: 5, hp: 10 },
+        successMsg: 'Nojento, porém altamente nutritivo. Você come em silêncio e deixa a casca.',
+        failEffect: { hp: -25 },
+        failMsg: 'O estalo da casca quebrando no dente chamou a mãe. Você tomou uma mordida severa!',
+      },
+      {
+        text: 'Deixar para lá e recuar',
+        isGuaranteed: true,
+        successMsg: 'Não vale a pena morrer hoje por um ovo cru.',
       }
     ],
   },
@@ -506,7 +532,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Clareira dos Vaga-lumes',
     desc: 'Milhares de insetos luminosos iluminam uma clareira silenciosa. Um raro refúgio noturno.',
     biome: 'noite',
-    silhouette: 'plantas',
+    silhouette: 'clareira_vagalumes',
     weight: 2,
     options: [
       {
@@ -530,7 +556,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Espinossauro Caçando',
     desc: 'Uma vela dorsal enorme corta a névoa do pântano. Maior que um T-Rex, e com fome.',
     biome: 'noite',
-    silhouette: 'alfa',
+    silhouette: 'espinossauro_noite',
     condition: (s: GameState) => s.generation >= 2,
     enemy: {
       name: 'Espinossauro',
@@ -545,9 +571,9 @@ export const EXTRA_CARDS: CardDef[] = [
   {
     id: 'mercador',
     title: 'O Mercador da Lanterna',
-    desc: 'Um velho com lanterna a pilha e carrinho de supermercado cheio de tralhas. "Tudo tem preço, amigo."',
+    desc: 'Um velho corcunda puxando um trenó de madeira entupido de sucata, iluminado por um lampião a óleo. "Tudo tem preço, amigo."',
     biome: 'noite',
-    silhouette: 'sobrevivente',
+    silhouette: 'mercador_noite',
     weight: 1,
     options: [
       {
@@ -577,7 +603,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Cardume de Peixes-Bico',
     desc: 'Peixes longos, de focinho de bico e escamas em losango, rondam o remanso como sombras.',
     biome: 'rio',
-    silhouette: 'rio_sombra',
+    silhouette: 'peixes_bico',
     options: [
       {
         text: 'Arpoar com a lança',
@@ -606,7 +632,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Gigante de Pescoço Longo',
     desc: 'Um azhdárquido do tamanho de uma girafa caminha pela margem, bicando o lodo. Ainda não te notou.',
     biome: 'rio',
-    silhouette: 'rio_sombra',
+    silhouette: 'azhdarquido',
     options: [
       {
         text: 'Esgueirar-se pelo juncal',
@@ -636,7 +662,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Toca do Mordedor',
     desc: 'Um mamífero atarracado, de mandíbula capaz de quebrar osso, guarda uma toca forrada de metal brilhante.',
     biome: 'rio',
-    silhouette: 'rio_sombra',
+    silhouette: 'toca_mordedor',
     options: [
       {
         text: 'Afastar o bicho com a lança',
@@ -666,7 +692,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Corredeira de Destroços',
     desc: 'A água escura arrasta pedaços do século XXI: chapas, canos, um carrinho de mercado.',
     biome: 'rio',
-    silhouette: 'rio_sombra',
+    silhouette: 'corredeira',
     options: [
       {
         text: 'Mergulhar no remanso e recolher',
@@ -696,7 +722,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Remanso das Sanguessugas',
     desc: 'A água parada ferve de corpos escuros e brilhantes. Algumas espécies fecham feridas; outras só sugam.',
     biome: 'rio',
-    silhouette: 'rio_sombra',
+    silhouette: 'sanguessugas',
     options: [
       {
         text: 'Colher as sanguessugas com cuidado',
@@ -726,7 +752,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Praia de Tartarugas',
     desc: 'Tartarugas de casco largo enterram ovos na areia úmida. A cheia do rio ainda não os levou.',
     biome: 'rio',
-    silhouette: 'rio_sombra',
+    silhouette: 'tartarugas',
     options: [
       {
         text: 'Cavar às pressas',
@@ -750,7 +776,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Carro Arrastado pela Correnteza',
     desc: 'Um sedan cinza gira devagar no remanso, preso a um tronco. Dentro, um assento ainda boia.',
     biome: 'rio',
-    silhouette: 'rio_sombra',
+    silhouette: 'carro_arrastado',
     options: [
       {
         text: 'Arrombar a porta',
@@ -777,25 +803,25 @@ export const EXTRA_CARDS: CardDef[] = [
   },
   {
     id: 'edmontossauros_bebedouro',
-    title: 'Manada no Bebedouro',
-    desc: 'Dezenas de bicos de pato mergulham o focinho na água. Onde há manada, há dente à espreita.',
+    title: 'Bando de Flamingos',
+    desc: 'Dezenas de flamingos de penas rosadas filtram a água do rio. Onde há bando, há dente à espreita.',
     biome: 'rio',
-    silhouette: 'herbivoro',
+    silhouette: 'flamingos',
     options: [
       {
-        text: 'Seguir o rastro da manada',
+        text: 'Seguir o rastro do bando',
         attr: 'sobrev',
         baseChance: 55,
         successEffect: { comida: 2 },
         successMsg: 'O rastro leva a um atalho seguro, com frutos pelo caminho.',
         failEffect: { hp: -20 },
-        failMsg: 'Você cruza o caminho de algo que seguia a manada.',
+        failMsg: 'Você cruza o caminho de algo que também seguia os pássaros.',
       },
       {
-        text: 'Dispersar a manada com o sinalizador',
+        text: 'Espantar o bando com sinalizador',
         reqTag: 'fogo',
         successEffect: { comida: 2 },
-        successMsg: 'Na debandada, um animal ferido fica para trás.',
+        successMsg: 'Na debandada estérica, um espécime bate numa árvore e desaba.',
       },
       {
         text: 'Esperar a manada terminar de beber',
@@ -810,7 +836,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Enchente Repentina',
     desc: 'O céu limpo trai você: um muro de água marrom desce pelo leito.',
     biome: 'rio',
-    silhouette: 'rio_sombra',
+    silhouette: 'enchente',
     options: [
       {
         text: 'Subir na árvore mais alta com a corda',
@@ -832,9 +858,9 @@ export const EXTRA_CARDS: CardDef[] = [
   {
     id: 'borealosuchus',
     title: 'Crocodiliano no Banco de Areia',
-    desc: 'Menor que o gigante do vau, mas igualmente paciente. Dois olhos amarelos rente à água.',
+    desc: 'Menor que o gigante do remanso, mas igualmente paciente. Dois olhos amarelos rente à água.',
     biome: 'rio',
-    silhouette: 'crocodilo',
+    silhouette: 'crocodiliano',
     enemy: {
       name: 'Borealosuchus',
       maxHp: 50,
@@ -852,7 +878,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Raio na Copa',
     desc: 'Um raio racha a árvore ao lado. A copa pega fogo e o vento joga as brasas na sua direção.',
     biome: 'tempestade',
-    silhouette: 'cristal',
+    silhouette: 'raio_copa',
     options: [
       {
         text: 'Abrir um aceiro com a lança',
@@ -885,7 +911,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Chuva de Enxofre',
     desc: 'A tempestade traz um cheiro de ovo podre. A chuva queima a pele onde cai.',
     biome: 'tempestade',
-    silhouette: 'cristal',
+    silhouette: 'chuva_enxofre',
     options: [
       {
         text: 'Abrigar-se numa fenda de rocha',
@@ -918,7 +944,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Deslizamento no Cânion',
     desc: 'O barranco se desfaz sob a chuva. Pedras do tamanho de um carro descem a encosta.',
     biome: 'tempestade',
-    silhouette: 'cristal',
+    silhouette: 'deslizamento_tempestade',
     options: [
       {
         text: 'Escalar a parede com a corda',
@@ -930,15 +956,15 @@ export const EXTRA_CARDS: CardDef[] = [
         text: 'Correr em zigue-zague',
         attr: 'agil',
         baseChance: 50,
-        successEffect: {},
-        successMsg: 'As pedras passam, uma a uma, rentes.',
+        successEffect: { sucata: 2 },
+        successMsg: 'As pedras rasgam o solo e expõem veios de sucata/minérios raros.',
         failEffect: { hp: -25 },
         failMsg: 'Uma pedra te pega de raspão e te derruba.',
       },
       {
         text: 'Esperar sob o abrigo da saliência',
         isGuaranteed: true,
-        successEffect: { food: -1 },
+        successEffect: { comida: -1 },
         successMsg: 'O estrondo dura minutos. Depois, silêncio.',
       },
     ],
@@ -948,7 +974,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Manada em Pânico',
     desc: 'O trovão estourou o juízo da manada. Chifres e couro vêm em linha reta na sua direção.',
     biome: 'tempestade',
-    silhouette: 'herbivoro',
+    silhouette: 'manada_tempestade',
     options: [
       {
         text: 'Subir numa rocha alta com a corda',
@@ -978,7 +1004,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Fenda de Estática',
     desc: 'O ar crepita. Uma linha trêmula no meio da chuva engole raios e devolve pedaços de outro tempo.',
     biome: 'tempestade',
-    silhouette: 'cristal',
+    silhouette: 'fenda_estatica',
     options: [
       {
         text: 'Examinar a anomalia de perto',
@@ -1002,7 +1028,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Caçador Encharcado',
     desc: 'Um raptor de penas coladas ao corpo se abriga sob uma rocha. Ele te viu antes de você vê-lo.',
     biome: 'tempestade',
-    silhouette: 'raptor',
+    silhouette: 'raptor_encharcado',
     enemy: {
       name: 'Dakotaraptor',
       maxHp: 55,
@@ -1018,7 +1044,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Asa de Avião Partida',
     desc: 'Uma asa de aeronave espetada no chão, chiando de chuva. Um pedaço do Voo 2026, ou de outro.',
     biome: 'tempestade',
-    silhouette: 'cristal',
+    silhouette: 'asa_aviao',
     options: [
       {
         text: 'Desmontar as chapas',
@@ -1047,22 +1073,33 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Poça de Peixes Atordoados',
     desc: 'Um raio acabou de cair no charco. A água está coalhada de peixes de barriga para cima.',
     biome: 'tempestade',
-    silhouette: 'cristal',
+    silhouette: 'peixes_atordoados',
     options: [
       {
-        text: 'Pegar os peixes com a lança, da margem',
+        text: 'Pegar da margem com a lança',
         reqTag: 'corte',
         successEffect: { comida: 4 },
         successMsg: 'Você espeta os maiores sem molhar o pé.',
       },
       {
-        text: 'Entrar na água e recolher todos',
+        text: 'Entrar na água e recolher todos à mão',
         attr: 'agil',
         baseChance: 55,
         successEffect: { comida: 5 },
-        successMsg: 'Uma pilha de peixes na margem. Dia de festa.',
+        successMsg: 'A água gélida acorda o corpo, mas o jantar está garantido.',
         failEffect: { hp: -20 },
-        failMsg: 'Ainda restava carga na água. Seus músculos travam.',
+        failMsg: 'A água barrenta escondia vidro quebrado e sanguessugas.',
+      },
+      {
+        text: 'Puxar tudo com a rede/corda',
+        reqTag: 'corda',
+        successEffect: { comida: 6 },
+        successMsg: 'Você arrasta dezenas de peixes de uma vez com o fio.',
+      },
+      {
+        text: 'Deixar pra lá',
+        isGuaranteed: true,
+        successMsg: 'Você não arrisca seus pés na lama fedorenta.',
       },
     ],
   },
@@ -1071,7 +1108,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Barraca de Campo Encharcada',
     desc: 'Uma barraca branca com o logotipo da TÊMPORA, rasgada pelo vento. Papéis flutuam numa poça no chão.',
     biome: 'tempestade',
-    silhouette: 'tenda',
+    silhouette: 'barraca_tempestade',
     options: [
       {
         text: 'Ler os papéis molhados',
@@ -1100,7 +1137,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Chilreios no Escuro',
     desc: 'Pequenos raptores emplumados se chamam entre os arbustos. São três, talvez quatro. Estão testando você.',
     biome: 'noite',
-    silhouette: 'raptor',
+    silhouette: 'raptores_arbusto',
     options: [
       {
         text: 'Acender o sinalizador',
@@ -1133,7 +1170,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Cabeça-Dura Territorial',
     desc: 'Um Paquicefalossauro bate a cúpula do crânio contra um tronco, marcando território. O tronco racha.',
     biome: 'noite',
-    silhouette: 'herbivoro',
+    silhouette: 'pachy_noite',
     options: [
       {
         text: 'Contornar em silêncio',
@@ -1163,7 +1200,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Aurora Esmeralda',
     desc: 'O céu noturno se acende em cortinas verdes. Não é aurora: é a Fenda respirando. Por um instante, você ouve uma buzina.',
     biome: 'noite',
-    silhouette: 'fenda',
+    silhouette: 'aurora_esmeralda',
     options: [
       {
         text: 'Anotar a direção do brilho',
@@ -1187,7 +1224,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Ossada ao Luar',
     desc: 'O esqueleto de um Tricerátopo branco sob a lua. Entre as costelas, uma mochila de lona com um zíper enferrujado.',
     biome: 'noite',
-    silhouette: 'acampamento',
+    silhouette: 'ossada',
     options: [
       {
         text: 'Pegar a mochila',
@@ -1211,7 +1248,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Brejo das Vozes',
     desc: 'No pântano, alguém chama por socorro em português. A voz se repete igual, sempre igual, como uma gravação.',
     biome: 'noite',
-    silhouette: 'rio_sombra',
+    silhouette: 'brejo_vozes',
     options: [
       {
         text: 'Seguir a voz',
@@ -1235,7 +1272,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Herbívoro Adormecido',
     desc: 'Um Tescelossauro dorme encolhido sob as samambaias. Carne fácil, se você tiver estômago para isso.',
     biome: 'noite',
-    silhouette: 'herbivoro',
+    silhouette: 'herbivoro_adormecido',
     options: [
       {
         text: 'Abater com a lança',
@@ -1267,7 +1304,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Tricerátopo com Filhote',
     desc: 'Uma fêmea de três chifres pasta com um filhote colado às patas. Ela já levantou a cabeça.',
     biome: 'selva',
-    silhouette: 'herbivoro',
+    silhouette: 'triceratopo',
     options: [
       {
         text: 'Recuar devagar pela trilha',
@@ -1297,7 +1334,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Cupinzeiro Gigante',
     desc: 'Uma torre de barro da altura de um poste. Dentro, algo metálico reflete o sol.',
     biome: 'selva',
-    silhouette: 'tenda',
+    silhouette: 'cupinzeiro',
     options: [
       {
         text: 'Quebrar a torre com a lança',
@@ -1330,7 +1367,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Pegadas Frescas de Tiranossauro',
     desc: 'Uma pegada do tamanho de uma banheira, ainda com água no fundo. O cheiro de carniça é recente.',
     biome: 'selva',
-    silhouette: 'alfa',
+    silhouette: 'pegada_trex',
     options: [
       {
         text: 'Seguir a trilha até a carcaça',
@@ -1354,7 +1391,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Matagal de Urtigas Gigantes',
     desc: 'O único caminho passa por um mato de folhas largas cobertas de pelos urticantes.',
     biome: 'selva',
-    silhouette: 'tenda',
+    silhouette: 'matagal',
     options: [
       {
         text: 'Abrir caminho com a lança',
@@ -1389,7 +1426,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Ônibus Escolar Tombado',
     desc: 'Um ônibus amarelo de lado, coberto de cipós. Mochilas coloridas ainda nos bancos.',
     biome: 'ruinas',
-    silhouette: 'metro',
+    silhouette: 'onibus',
     options: [
       {
         text: 'Vasculhar as mochilas',
@@ -1412,7 +1449,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Supermercado Alagado',
     desc: 'Um mercado de bairro com água pela cintura. As prateleiras de cima parecem intactas. Algo se move entre as gôndolas.',
     biome: 'ruinas',
-    silhouette: 'container',
+    silhouette: 'supermercado',
     options: [
       {
         text: 'Nadar até as prateleiras de cima',
@@ -1442,7 +1479,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Torre de Celular Caída',
     desc: 'Uma antena de telefonia dobrada sobre a mata, com os painéis ainda presos. Cabos de cobre por todo lado.',
     biome: 'ruinas',
-    silhouette: 'radio',
+    silhouette: 'torre_caida',
     options: [
       {
         text: 'Escalar e soltar os painéis',
@@ -1472,7 +1509,7 @@ export const EXTRA_CARDS: CardDef[] = [
     title: 'Muro Pichado',
     desc: 'Num muro de concreto, alguém pintou com tinta spray: "ALENCAR SABIA. O CONSELHO MENTIU. NÃO LIGUEM O RÁDIO 4 MINUTOS." Abaixo, marcas de garras.',
     biome: 'ruinas',
-    silhouette: 'bunker',
+    silhouette: 'muro',
     once: true,
     options: [
       {

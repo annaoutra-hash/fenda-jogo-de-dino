@@ -66,7 +66,7 @@ export interface Effect {
   ending?: boolean | 'paradoxo';
 }
 
-export type Biome = 'selva' | 'noite' | 'ruinas' | 'rio' | 'tempestade';
+export type Biome = 'selva' | 'noite' | 'ruinas' | 'rio' | 'tempestade' | 'fenda';
 
 export interface EnemyDef {
   name: string;
@@ -157,6 +157,8 @@ export interface GameState {
   report: ExpeditionReport | null;
   gameWon: boolean | 'paradoxo';
   incubatorQueue: { eggId: string; petId: string; expeditionsLeft: number }[];
+  viewGallery?: boolean;
+  galleryFilter?: string;
 }
 
 export interface ExpeditionState {

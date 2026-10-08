@@ -11,7 +11,8 @@ import {
   RotateCcw,
   Backpack,
   Activity,
-  HelpCircle
+  HelpCircle,
+  BookOpen
 } from 'lucide-react';
 import type {
   GameState,
@@ -72,6 +73,18 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
   }, [gameState]);
+
+  useEffect(() => {
+    if (gameState.activeExpedition?.currentCard) {
+      try {
+        const comp = JSON.parse(localStorage.getItem('fenda_compendium') || '[]');
+        if (!comp.includes(gameState.activeExpedition.currentCard.id)) {
+          comp.push(gameState.activeExpedition.currentCard.id);
+          localStorage.setItem('fenda_compendium', JSON.stringify(comp));
+        }
+      } catch {}
+    }
+  }, [gameState.activeExpedition?.currentCard?.id]);
 
   function createInitialState(): GameState {
     const p1 = generateRandomSurvivor();
@@ -454,7 +467,7 @@ export default function App() {
   };
 
   const calculateChance = (cardOption: any) => {
-    if (!cardOption.attr || !gameState.leader) return 0;
+    if (!cardOption || !cardOption.attr || !gameState.leader) return 0;
     let chance = cardOption.baseChance || 50;
 
     // Bônus do líder
@@ -1287,6 +1300,76 @@ export default function App() {
     );
   }
 
+  if (gameState.viewGallery) {
+    const all = ALL_CARDS;
+    const unlocked = [...new Set(JSON.parse(localStorage.getItem('fenda_compendium') || '[]'))];
+    const filter = gameState.galleryFilter || 'all';
+    const displayed = filter === 'all' ? all : all.filter(c => c.biome === filter);
+    
+    return (
+      <div className={`min-h-screen ${bgClass} text-[#e0d8c3] flex flex-col p-4 overflow-y-auto`}>
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+          <h1 className="text-2xl font-bold text-[#e57a3b]">Compêndio da Fenda ({unlocked.length}/{all.length} Descobertas)</h1>
+          <div className="flex gap-2">
+            <button onClick={() => setGameState(p => ({...p, viewGallery: false, galleryFilter: undefined}))} className="px-6 py-2 bg-[#2c3826] hover:bg-[#4a8270] transition rounded text-sm font-bold">Voltar ao Jogo</button>
+          </div>
+        </div>
+
+        {/* Biome Filter Buttons */}
+        <div className="flex flex-wrap gap-2 mb-6 justify-center">
+          {['all', 'selva', 'ruinas', 'rio', 'tempestade', 'noite', 'fenda'].map(b => (
+            <button
+              key={b}
+              onClick={() => setGameState(p => ({...p, galleryFilter: b}))}
+              className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition border ${
+                filter === b 
+                  ? 'bg-[#e57a3b] text-[#060906] border-[#e57a3b]' 
+                  : 'bg-[#182017] text-[#857f70] border-[#2c3826] hover:border-[#4a8270]'
+              }`}
+            >
+              {b === 'all' ? 'Todos' : b}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 place-items-center">
+          {displayed.map((c, idx) => {
+            const isUnlocked = unlocked.includes(c.id);
+            return (
+              <div key={`${c.id}-${idx}`} className="w-[300px] flex flex-col">
+                {isUnlocked ? (
+                  <div className="scale-90 origin-top pointer-events-none">
+                    <SwipeableCard
+                      card={{ 
+                        ...c, 
+                        options: c.enemy && (!c.options || c.options.length === 0) 
+                          ? [
+                              { text: 'Atacar com Armas', attr: 'combate' as const, baseChance: c.enemy.combatChance, successMsg: '', failMsg: '' },
+                              { text: 'Fugir correndo', attr: 'agil' as const, baseChance: c.enemy.fleeChance, successMsg: '', failMsg: '' }
+                            ]
+                          : c.options.map(o => ({...o, baseChance: o.baseChance || 100})) 
+                      }}
+                      pack={[]}
+                      calculateChance={(opt) => opt?.baseChance || 100}
+                      onChoose={() => {}}
+                      disabled={true}
+                      expeditionFood={0}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-[400px] bg-[#0a0f0a] border-2 border-dashed border-[#2c3826]/30 rounded-2xl flex flex-col items-center justify-center opacity-50">
+                    <span className="text-6xl text-[#2c3826]/50 font-bold mb-4">?</span>
+                    <span className="text-xs uppercase tracking-widest text-[#4a8270]/50 font-mono">Não Encontrado</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   if (!gameState.introSeen) {
     return (
       <div className="min-h-screen bg-[#000] text-[#e0d8c3] flex flex-col items-center justify-center p-4">
@@ -1296,26 +1379,76 @@ export default function App() {
           transition={{ duration: 1.5 }}
           className="max-w-md w-full flex flex-col items-center text-center space-y-6"
         >
-          <svg width="200" height="100" viewBox="0 0 200 100">
-            <path d="M 80,10 Q 100,50 120,90 Q 90,70 70,50 Q 80,30 80,10 Z" fill="#4a8270" opacity="0.8" className="animate-pulse" />
-            <path d="M 85,15 Q 100,50 115,85 Q 92,68 75,50 Q 82,32 85,15 Z" fill="#8fd16a" />
-            <circle cx="100" cy="50" r="2" fill="#fff" />
-          </svg>
-          
-          <div className="space-y-4">
-            <p className="text-sm text-[#c5bfae] italic">
+          {/* Painel 1: O Teste de Ressonância (Interface do Radar/Máquina) */}
+          <div className="w-full bg-[#060906] border border-[#2c3826] rounded-sm p-2 flex flex-col sm:flex-row gap-4 items-center shadow-lg">
+            <svg width="100" height="100" viewBox="0 0 100 100" className="flex-shrink-0 bg-[#030504] border border-[#1b2b1e]">
+               {/* Radar/Interface Sci-Fi */}
+               <circle cx="50" cy="50" r="40" fill="none" stroke="#1b2b1e" strokeWidth="2" />
+               <circle cx="50" cy="50" r="30" fill="none" stroke="#2c3826" strokeWidth="2" strokeDasharray="5 5" />
+               <circle cx="50" cy="50" r="20" fill="none" stroke="#4a8270" strokeWidth="1" />
+               
+               {/* Centro de Energia */}
+               <circle cx="50" cy="50" r="8" fill="#a4fca2" className="animate-pulse" opacity="0.9" />
+               <circle cx="50" cy="50" r="3" fill="#ffffff" />
+               
+               {/* Anomalia detectada (Ponteiro) */}
+               <line x1="50" y1="50" x2="80" y2="20" stroke="#a4fca2" strokeWidth="2" opacity="0.8" />
+               <circle cx="80" cy="20" r="4" fill="#e57a3b" className="animate-pulse" />
+               <circle cx="80" cy="20" r="10" fill="#e57a3b" opacity="0.3" />
+            </svg>
+            <p className="text-[13px] text-[#8fd16a] italic text-left flex-1 px-2 font-mono">
               "Projeto TÊMPORA. Teste de ressonância número 40."
-            </p>
-            <p className="text-sm text-[#e0d8c3]">
-              A falha na máquina abriu uma costura no tempo. 
-              Um vagão do metrô. Um voo comercial. O seu carro. 
-              Tudo sendo puxado para 66 milhões de anos no passado.
-            </p>
-            <p className="text-sm text-[#e0d8c3]">
-              O céu tem dois sois. Um deles é maior a cada dia. Você sente que não tem muito tempo.
             </p>
           </div>
 
+          {/* Painel 2: A Fenda Puxando o Mundo */}
+          <div className="w-full bg-[#060906] border border-[#2c3826] rounded-sm p-2 flex flex-col sm:flex-row-reverse gap-4 items-center shadow-lg">
+             <svg width="100" height="100" viewBox="0 0 100 100" className="flex-shrink-0 bg-[#030504] border border-[#1b2b1e]">
+               {/* O Rasgo no Espaço-Tempo (Fluido e orgânico) */}
+               <path d="M 40,10 C 70,30 20,60 50,90 C 80,60 70,30 60,10 Z" fill="#4a8270" opacity="0.4" />
+               <path d="M 45,20 C 60,35 35,55 50,80 C 65,55 60,35 55,20 Z" fill="#a4fca2" opacity="0.8" />
+               
+               {/* Silhueta de carro caindo (mais definida) */}
+               <g transform="translate(25, 45) rotate(30)">
+                 <rect x="-10" y="-5" width="20" height="8" rx="2" fill="#030504" />
+                 <rect x="-5" y="-10" width="10" height="5" rx="1" fill="#030504" />
+                 <circle cx="-6" cy="3" r="2.5" fill="#131a12" />
+                 <circle cx="6" cy="3" r="2.5" fill="#131a12" />
+               </g>
+
+               {/* Detritos / Pedaço de asfalto caindo */}
+               <polygon points="75,55 85,50 90,60 80,65" fill="#060906" transform="rotate(-15 80 55)" />
+             </svg>
+             <p className="text-[13px] text-[#c5bfae] text-left flex-1 px-2 leading-relaxed">
+              A falha na máquina abriu uma costura no tempo. Um vagão do metrô. Um voo comercial. O seu carro. Tudo sendo puxado para 66 milhões de anos no passado.
+             </p>
+          </div>
+
+          {/* Painel 3: O Meteoro se Aproximando */}
+          <div className="w-full bg-[#060906] border border-[#2c3826] rounded-sm p-2 flex flex-col sm:flex-row gap-4 items-center shadow-lg mb-6">
+             <svg width="100" height="100" viewBox="0 0 100 100" className="flex-shrink-0 bg-[#030504] border border-[#1b2b1e]">
+               {/* Chão e Floresta (Terreno acidentado) */}
+               <path d="M 0,100 L 0,75 C 30,65 70,85 100,70 L 100,100 Z" fill="#060906" />
+               
+               {/* Árvores escuras no horizonte */}
+               <polygon points="15,80 20,50 25,80" fill="#030504" />
+               <polygon points="35,85 40,60 45,85" fill="#030504" />
+               <polygon points="80,75 85,45 90,75" fill="#030504" />
+
+               {/* O Meteoro Devastador caindo */}
+               <path d="M 50,10 Q 75,-10 95,0 Q 80,20 80,30 Z" fill="#ffb84d" opacity="0.3" />
+               <circle cx="70" cy="30" r="18" fill="#e57a3b" opacity="0.4" />
+               <circle cx="70" cy="30" r="12" fill="#e57a3b" />
+               <circle cx="72" cy="28" r="4" fill="#ffffff" opacity="0.9" />
+               <path d="M 62,22 Q 40,-5 90,-5 Q 85,15 78,25 Z" fill="#e57a3b" opacity="0.6" />
+
+               {/* O Sol Normal pálido no canto */}
+               <circle cx="20" cy="40" r="6" fill="#e0d8c3" opacity="0.7" />
+             </svg>
+             <p className="text-[13px] text-[#c5bfae] text-left flex-1 px-2 leading-relaxed">
+              O céu tem dois sois. Um deles é maior a cada dia. Você sente que não tem muito tempo.
+             </p>
+          </div>
           <button
             onClick={() => {
               sfx.click();
@@ -1438,9 +1571,18 @@ export default function App() {
     return (
       <div className={`min-h-screen ${bgClass} text-[#e0d8c3] flex justify-center p-4`}>
         <div className="w-full max-w-md">
-          <h1 className="text-xl font-bold text-[#e57a3b] mb-1">
-            {lastDead ? `${lastDead.name} não retornou da selva` : 'Fenda Temporal — Cretáceo'}
-          </h1>
+          <div className="flex justify-between items-start mb-1">
+            <h1 className="text-xl font-bold text-[#e57a3b]">
+              {lastDead ? `${lastDead.name} não retornou` : 'Fenda Temporal'}
+            </h1>
+            <button 
+                onClick={() => setGameState(p => ({...p, viewGallery: true}))}
+                className="text-[#857f70] hover:text-[#e0d8c3] transition bg-[#182017] p-2 rounded border border-[#2c3826]"
+                title="Catálogo do Motor (Ver todas as Cartas)"
+              >
+                <BookOpen size={16} />
+            </button>
+          </div>
           <p className="text-xs text-[#857f70] mb-4 leading-relaxed">
             {lastDead
               ? 'O equipamento da patrulha anterior se perdeu na floresta. Mas o acampamento continua de pé.'
@@ -1798,6 +1940,13 @@ export default function App() {
               >
                 <HelpCircle size={16} />
               </button>
+              <button 
+                onClick={() => setGameState(p => ({...p, viewGallery: true}))}
+                className="text-[#857f70] hover:text-[#e0d8c3] transition bg-[#182017] p-1 rounded border border-[#2c3826]"
+                title="Catálogo do Motor (Ver todas as Cartas)"
+              >
+                <BookOpen size={16} />
+              </button>
             </span>
             <span className="text-xs font-mono font-normal text-[#857f70]">Geração {gameState.generation}</span>
           </h1>
@@ -1814,7 +1963,7 @@ export default function App() {
 
         {/* Cena viva do acampamento */}
         <div className="mt-3">
-          <CampScene buildings={gameState.buildings} survivors={gameState.pool.length} stash={gameState.stash} incubatorQueue={gameState.incubatorQueue} />
+          <CampScene buildings={gameState.buildings} survivors={gameState.population ?? 12} stash={gameState.stash} incubatorQueue={gameState.incubatorQueue} />
         </div>
 
         {/* Recursos Centrais */}
@@ -1829,7 +1978,7 @@ export default function App() {
             <Activity size={15} /> {gameState.camp.remedio} Remédio
           </span>
           <span className="flex items-center gap-1 text-[#c5bfae]">
-            <Users size={15} /> {gameState.pool.length}
+            <Users size={15} /> {gameState.population ?? 12} Colonos
           </span>
         </div>
 
@@ -1924,7 +2073,12 @@ export default function App() {
                 {gameState.flags.diario_cientista ? '✓' : '○'} Diário de Campo da Equipe (Acampamento na Selva)
               </div>
               <div className={(gameState.cristaisTemporais || 0) >= 2 ? 'text-[#8fd16a]' : 'text-[#857f70]'}>
-                {(gameState.cristaisTemporais || 0) >= 2 ? '✓' : '○'} Cristais Temporais ({gameState.cristaisTemporais || 0}/2 coletados nas Tempestades)
+                {(gameState.cristaisTemporais || 0) >= 2 ? '✓' : '[ ]'} Energia do Motor ({gameState.cristaisTemporais || 0}/2 Cristais Temporais coletados)
+                {gameState.flags.diario_cientista && (
+                  <div className="text-[10px] text-[#4a8270] mt-1 ml-4 italic opacity-80">
+                    *Nota do diário de campo: "Apenas 2 cristais abrem a fenda. Mas para evitar a desintegração dos viajantes, é vital estocar cristais extras para cada passageiro que cruzar."
+                  </div>
+                )}
               </div>
             </div>
             {(gameState.buildings.radio > 0 &&

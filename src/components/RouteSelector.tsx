@@ -46,6 +46,11 @@ const BIOME_CONFIG: Record<Biome, { icon: React.ReactNode; border: string; accen
     border: 'border-[#3d335c]',
     accent: 'text-[#7f6fb0]',
   },
+  fenda: {
+    icon: <Trees size={22} className="text-[#a4fca2]" />,
+    border: 'border-[#a4fca2]',
+    accent: 'text-[#a4fca2]',
+  },
 };
 
 export function RouteSelector({
