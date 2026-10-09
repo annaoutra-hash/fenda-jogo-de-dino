@@ -21,7 +21,8 @@ import type {
   RollResult,
   Biome,
   Effect,
-  ExpeditionReport
+  ExpeditionReport,
+  ItemInstance
 } from './types';
 import {
   SURVIVOR_ORIGINS,
@@ -129,7 +130,14 @@ export default function App() {
     };
   }
 
-  const getMaxHp = () => (gameState.buildings.enfermaria > 0 ? 130 : 100);
+  const getMaxHp = (customPack?: ItemInstance[]) => {
+    let base = gameState.buildings.enfermaria > 0 ? 130 : 100;
+    const currentPack = customPack || gameState.activeExpedition?.pack;
+    if (currentPack?.some(i => i.id === 'colete')) {
+      base += 25;
+    }
+    return base;
+  };
 
   // ==================== AÇÕES DO ACAMPAMENTO ====================
   const handleSelectLeader = (survivor: Survivor) => {
@@ -253,8 +261,8 @@ export default function App() {
       stash: remainingStash,
       expeditionSetup: null,
       activeExpedition: {
-        hp: getMaxHp(),
-        maxHp: getMaxHp(),
+        hp: getMaxHp(pack),
+        maxHp: getMaxHp(pack),
         food,
         cardIndex: 1,
         totalCards: duration,
@@ -1722,9 +1730,12 @@ export default function App() {
               <span className="flex items-center gap-1 text-[#4a8270]">
                 <Compass size={14} /> {exp.cardIndex}/{exp.totalCards}
               </span>
-              <span className="flex items-center gap-1 text-xs font-mono text-[#857f70]">
-                <Backpack size={14} /> ⚙{exp.loot.sucata} 🍗{exp.loot.comida} 💊{exp.loot.remedio}
-              </span>
+              <div className="flex items-center gap-2 text-xs font-mono bg-[#121811] px-2 py-1 rounded border border-[#253320]" title="Mochila de Coleta (Só vai para a colônia se você retornar vivo!)">
+                <span className="text-[#857f70] flex items-center gap-1 font-bold"><Backpack size={13} className="text-[#a4fca2]" /> Coleta:</span>
+                <span className="text-[#4a8270] font-bold" title="Sucata coletada">⚙ {exp.loot.sucata}</span>
+                <span className="text-[#e57a3b] font-bold" title="Rações coletadas">🍗 {exp.loot.comida}</span>
+                <span className="text-[#8fd16a] font-bold" title="Remédios coletados">💊 {exp.loot.remedio}</span>
+              </div>
             </div>
 
             {/* Barra de Vida Visual */}
